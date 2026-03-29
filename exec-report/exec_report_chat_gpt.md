@@ -274,7 +274,7 @@ They will have **better thinkers per unit of execution**.
 
 ## Integrated Visual Model: From Pyramid to AI-Native Diamond Organization
 
-### Current State: Traditional IT Delivery Pyramid
+### Current State: Traditional IT Delivery Pyramid┘
 
              ┌───────────────────────┐
              │   Leadership Layer    │
@@ -295,7 +295,6 @@ They will have **better thinkers per unit of execution**.
              │   Junior Layer    │
              │ (Entry-level Dev) │
              └───────────────────┘
-
 ---
 
 ### Future State: AI-Native “Diamond” Operating Model
