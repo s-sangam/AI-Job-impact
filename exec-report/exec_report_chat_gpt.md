@@ -233,6 +233,23 @@ Understand actual AI adoption vs potential
 
 ---
 
+## Conclusion: A Workforce Upgrade, Not a Workforce Reduction
+
+This transformation is not about shrinking IT—it is about **elevating it**.
+
+The future IT organization will:
+- Think in **systems and intent**, not code
+- Operate as **curators of intelligence**, not producers of syntax
+- Deliver **exponentially more value per employee**
+
+The Exposure Gap provides a rare advantage:
+
+> A window where capability exists—but adoption has not yet commoditized it.
+
+Organizations that act decisively will not just adapt—they will **define the new operating standard**.
+
+---
+
 ## Final Leadership Message
 
 This is not a technology shift.
@@ -355,22 +372,3 @@ They will have **better thinkers per unit of execution**.
 - Fewer entry roles, but:
   - Faster skill acceleration
   - Learning via **AI supervision**
-
----
-
-## Conclusion: A Workforce Upgrade, Not a Workforce Reduction
-
-This transformation is not about shrinking IT—it is about **elevating it**.
-
-The future IT organization will:
-- Think in **systems and intent**, not code
-- Operate as **curators of intelligence**, not producers of syntax
-- Deliver **exponentially more value per employee**
-
-The Exposure Gap provides a rare advantage:
-
-> A window where capability exists—but adoption has not yet commoditized it.
-
-Organizations that act decisively will not just adapt—they will **define the new operating standard**.
-
----
