@@ -1,4 +1,4 @@
-# The AI Impact --> Rewiring of IT: From Code Factories to Context Engines (2026–2030)
+# Rewiring IT for the AI Era: From Code Execution to Context Mastery
 
 ---
 
