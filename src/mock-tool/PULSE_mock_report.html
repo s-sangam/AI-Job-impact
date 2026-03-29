@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PULSE 2.0 — AI Workforce Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root{
+  --navy:#080c18;--navy2:#0d1225;--navy3:#111830;--navy4:#162040;--navy5:#1c2850;
+  --border:#1e2848;--border2:#263260;
+  --gold:#c8a96e;--gold2:#e2c98a;--gold3:#f0dba8;--goldA:rgba(200,169,110,.12);--goldB:rgba(200,169,110,.06);
+  --slate:#4a5880;--slate2:#6272a0;--body:#a8b4cc;--text:#d4daea;--bright:#ecf0f8;
+  --red:#d95f5f;--redA:rgba(217,95,95,.12);--amber:#d4843a;--amberA:rgba(212,132,58,.12);
+  --teal:#3aadaa;--tealA:rgba(58,173,170,.12);--green:#4aaa7a;--greenA:rgba(74,170,122,.12);
+  --blue:#4a80d4;--purple:#8470cc;
+  --low-c:#4aaa7a;--mid-c:#d4843a;--high-c:#d95f5f;
+  --ff-disp:'Playfair Display',Georgia,serif;--ff-mono:'IBM Plex Mono',monospace;--ff-body:'IBM Plex Sans',sans-serif;
+  --r:6px;--r2:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--text);font-family:var(--ff-body);min-height:100vh;overflow-x:hidden;font-size:13px}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,169,110,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,.025) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+
+/* ── LOAD SCREEN ── */
+#load-screen{position:fixed;inset:0;background:var(--navy);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px}
+.ls-logo{font-family:var(--ff-disp);font-size:48px;font-weight:700;color:var(--gold);letter-spacing:-.02em}
+.ls-sub{font-family:var(--ff-mono);font-size:11px;color:var(--slate);letter-spacing:.14em;text-transform:uppercase}
+.ls-card{background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:32px 36px;width:480px;text-align:center}
+.ls-title{font-family:var(--ff-disp);font-size:17px;font-weight:600;color:var(--bright);margin-bottom:8px}
+.ls-desc{font-size:12px;color:var(--slate2);line-height:1.6;margin-bottom:24px}
+.ls-drop{border:2px dashed var(--border2);border-radius:8px;padding:28px;margin-bottom:16px;cursor:pointer;transition:all .2s;position:relative}
+.ls-drop:hover,.ls-drop.drag-over{border-color:var(--gold);background:var(--goldB)}
+.ls-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.ls-drop-icon{font-size:28px;margin-bottom:8px}
+.ls-drop-text{font-size:12px;color:var(--slate2)}
+.ls-drop-text strong{color:var(--gold)}
+.ls-or{font-size:11px;color:var(--slate);font-family:var(--ff-mono);margin:12px 0;display:flex;align-items:center;gap:10px}
+.ls-or::before,.ls-or::after{content:'';flex:1;height:1px;background:var(--border)}
+.ls-btn{width:100%;padding:11px;border-radius:6px;font-family:var(--ff-mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;transition:all .2s}
+.ls-btn-primary{background:linear-gradient(135deg,var(--navy4),var(--navy5));border:1px solid var(--border2);color:var(--gold)}
+.ls-btn-primary:hover{border-color:var(--gold);background:var(--goldB)}
+.ls-error{background:var(--redA);border:1px solid rgba(217,95,95,.3);border-radius:5px;padding:9px 12px;font-size:11px;color:var(--red);margin-top:10px;display:none}
+
+/* ── SHELL ── */
+.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh;position:relative;z-index:1;display:none}
+.sb{background:var(--navy2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden}
+.sb-top{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.sb-mark{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sb-logo{width:38px;height:38px;background:linear-gradient(145deg,var(--navy4),var(--navy5));border:1px solid var(--border2);border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.sb-logo::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold) 0%,transparent 60%);opacity:.3}
+.sb-logo span{font-family:var(--ff-disp);font-weight:700;font-size:17px;color:var(--gold);position:relative;z-index:1}
+.sb-wordmark{font-family:var(--ff-disp);font-weight:600;font-size:18px;color:var(--bright);letter-spacing:-.01em}
+.sb-version{font-family:var(--ff-mono);font-size:10px;color:var(--slate);letter-spacing:.06em;margin-top:1px}
+.sb-org{background:var(--goldB);border:1px solid rgba(200,169,110,.15);border-radius:4px;padding:8px 12px;font-size:11px}
+.sb-org-name{color:var(--gold);font-weight:600;margin-bottom:1px}
+.sb-org-sub{color:var(--slate2);font-family:var(--ff-mono);font-size:10px}
+.sb-nav{flex:1;padding:16px 12px;overflow-y:auto}
+.nav-group{margin-bottom:20px}
+.nav-group-label{font-family:var(--ff-mono);font-size:9px;color:var(--slate);text-transform:uppercase;letter-spacing:.14em;padding:0 8px;margin-bottom:6px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:5px;cursor:pointer;color:var(--slate2);font-size:12.5px;font-weight:500;transition:all .15s;margin-bottom:1px;border:1px solid transparent}
+.ni:hover{background:var(--navy3);color:var(--text)}
+.ni.active{background:var(--goldB);border-color:rgba(200,169,110,.2);color:var(--gold)}
+.ni-icon{font-size:13px;width:16px;text-align:center;flex-shrink:0;opacity:.8}
+.ni-cap{margin-left:auto;font-family:var(--ff-mono);font-size:9px;color:var(--slate);padding:1px 5px;background:var(--navy4);border-radius:3px}
+.ni.active .ni-cap{color:var(--gold);background:var(--goldA)}
+.sb-reload{margin:8px 12px 0;padding:7px 10px;border-radius:5px;cursor:pointer;color:var(--slate);font-size:11px;font-family:var(--ff-mono);border:1px solid var(--border);background:transparent;transition:all .15s;text-align:center}
+.sb-reload:hover{border-color:var(--border2);color:var(--body)}
+.sb-foot{padding:14px 20px;border-top:1px solid var(--border)}
+.sb-model{font-family:var(--ff-mono);font-size:10px;color:var(--slate);line-height:1.5}
+.sb-model span{color:var(--teal)}
+.sb-date{font-family:var(--ff-mono);font-size:9px;color:var(--slate);margin-top:3px}
+
+/* ── MAIN + PAGES ── */
+.main{min-height:100vh;overflow-y:auto}
+.pg{display:none;padding:36px 40px;animation:pgIn .2s ease}
+.pg.active{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PAGE HEADER ── */
+.ph{margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:24px}
+.ph-eye{font-family:var(--ff-mono);font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ph-eye::before{content:'';width:24px;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
+.ph-title{font-family:var(--ff-disp);font-size:30px;font-weight:700;color:var(--bright);letter-spacing:-.02em;line-height:1.1}
+.ph-title em{color:var(--gold);font-style:italic}
+.ph-desc{font-size:12.5px;color:var(--slate2);margin-top:8px;line-height:1.65;max-width:620px}
+
+/* ── STATS ── */
+.stat-row{display:grid;gap:14px;margin-bottom:28px}
+.stat-row-4{grid-template-columns:repeat(4,1fr)}
+.stat-row-5{grid-template-columns:repeat(5,1fr)}
+.stat{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);padding:18px 20px;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px}
+.stat.gold::before{background:linear-gradient(90deg,var(--gold),var(--gold2),transparent)}
+.stat.teal::before{background:linear-gradient(90deg,var(--teal),transparent)}
+.stat.red::before{background:linear-gradient(90deg,var(--red),transparent)}
+.stat.amber::before{background:linear-gradient(90deg,var(--amber),transparent)}
+.stat.green::before{background:linear-gradient(90deg,var(--green),transparent)}
+.s-lbl{font-family:var(--ff-mono);font-size:9px;color:var(--slate);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+.s-val{font-family:var(--ff-disp);font-size:32px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.s-val.gold{color:var(--gold)}.s-val.teal{color:var(--teal)}.s-val.red{color:var(--red)}.s-val.amber{color:var(--amber)}.s-val.green{color:var(--green)}
+.s-sub{font-size:11px;color:var(--slate2);margin-top:6px;line-height:1.4}
+
+/* ── MISC SHARED ── */
+.slabel{font-family:var(--ff-mono);font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.slabel::after{content:'';flex:1;height:1px;background:var(--border)}
+.card{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);padding:22px;margin-bottom:20px}
+.card-hd{font-family:var(--ff-disp);font-size:15px;font-weight:600;color:var(--bright);margin-bottom:16px;letter-spacing:-.01em}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.sr{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--ff-mono);font-weight:500;font-size:13px;border:1.5px solid;flex-shrink:0}
+.sr-lo{color:var(--low-c);border-color:var(--low-c);background:var(--greenA)}
+.sr-mi{color:var(--mid-c);border-color:var(--mid-c);background:var(--amberA)}
+.sr-hi{color:var(--high-c);border-color:var(--high-c);background:var(--redA)}
+.tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:3px;font-size:10px;font-family:var(--ff-mono);border:1px solid;white-space:nowrap}
+.t-on{color:#5599ff;border-color:rgba(85,153,255,.25);background:rgba(85,153,255,.08)}
+.t-near{color:var(--teal);border-color:rgba(58,173,170,.25);background:var(--tealA)}
+.t-off{color:var(--amber);border-color:rgba(212,132,58,.25);background:var(--amberA)}
+.t-aug{color:var(--blue);border-color:rgba(74,128,212,.3);background:rgba(74,128,212,.08)}
+.t-trans{color:var(--amber);border-color:rgba(212,132,58,.3);background:var(--amberA)}
+.t-merge{color:var(--purple);border-color:rgba(132,112,204,.3);background:rgba(132,112,204,.08)}
+.t-obs{color:var(--red);border-color:rgba(217,95,95,.3);background:var(--redA)}
+.t-new{color:var(--green);border-color:rgba(74,170,122,.3);background:var(--greenA)}
+.t-dec{color:var(--slate);border-color:var(--border);text-decoration:line-through;opacity:.55}
+.t-inc{color:var(--teal);border-color:rgba(58,173,170,.3);background:var(--tealA)}
+.t-nnew{color:var(--gold);border-color:rgba(200,169,110,.3);background:var(--goldA)}
+.brow{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.blbl{font-size:11.5px;color:var(--slate2);width:165px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btrack{flex:1;background:var(--navy4);height:18px;border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.bfill{height:100%;border-radius:2px;display:flex;align-items:center;padding:0 7px;font-size:9px;font-family:var(--ff-mono);font-weight:500;color:rgba(8,12,24,.9);transition:width 1s cubic-bezier(.23,1,.32,1)}
+.bf-lo{background:var(--low-c)}.bf-mi{background:var(--mid-c)}.bf-hi{background:var(--high-c)}
+.rrow{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--border)}
+.rrow:last-child{border:none}
+.rinfo{flex:1;min-width:0}
+.rtitle{font-size:13px;font-weight:600;color:var(--bright)}
+.rmeta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;align-items:center}
+.rdrivers{margin-top:6px}
+.rdriv{font-size:11px;color:var(--slate2);display:flex;gap:5px;line-height:1.4;margin-bottom:2px}
+.rdriv::before{content:'›';color:var(--gold);flex-shrink:0}
+.disc{display:flex;gap:10px;background:var(--amberA);border:1px solid rgba(212,132,58,.2);border-radius:var(--r);padding:12px 16px;font-size:11.5px;color:var(--slate2);line-height:1.55;margin-bottom:22px}
+#tt{position:fixed;background:var(--navy3);border:1px solid var(--border2);border-radius:6px;padding:9px 13px;font-size:11.5px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:1000;max-width:210px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+
+/* ── EXEC SUMMARY ── */
+.ex-banner{background:linear-gradient(135deg,var(--navy3) 0%,var(--navy4) 100%);border:1px solid var(--border2);border-radius:var(--r2);padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden}
+.ex-banner::before{content:'PULSE';position:absolute;right:-10px;top:-20px;font-family:var(--ff-disp);font-size:140px;font-weight:700;color:var(--gold);opacity:.04;line-height:1;pointer-events:none}
+.ex-headline{font-family:var(--ff-disp);font-size:22px;font-weight:700;color:var(--bright);line-height:1.3;margin-bottom:10px;max-width:640px}
+.ex-body{font-size:12.5px;color:var(--body);line-height:1.7;max-width:620px}
+.risk-meter{display:flex;gap:3px;margin-top:20px;margin-bottom:4px}
+.rm-seg{height:8px;border-radius:2px;flex:1;opacity:.6}
+.rm-seg.active{opacity:1;position:relative}
+.rm-seg.active::after{content:'▲';position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--bright)}
+.rm-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--slate);font-family:var(--ff-mono);margin-top:5px}
+.finding{display:flex;gap:14px;padding:16px 18px;background:var(--navy3);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px}
+.finding-num{font-family:var(--ff-disp);font-size:28px;font-weight:700;color:var(--gold);opacity:.4;flex-shrink:0;line-height:1;width:28px}
+.finding-title{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:4px}
+.finding-body{font-size:12px;color:var(--slate2);line-height:1.6}
+.action-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px}
+.action-card{background:var(--navy3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.ac-time{font-family:var(--ff-mono);font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.ac-title{font-size:12.5px;font-weight:600;color:var(--bright);margin-bottom:5px}
+.ac-body{font-size:11.5px;color:var(--slate2);line-height:1.5}
+.ac-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+
+/* ── ORG ── */
+.stream-blk{margin-bottom:16px}
+.s-hd{display:flex;align-items:center;gap:12px;padding:11px 16px;background:var(--navy2);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s}
+.s-hd:hover,.s-hd.open{border-color:rgba(200,169,110,.3);background:var(--goldB)}
+.s-name{font-family:var(--ff-disp);font-size:14px;font-weight:600;color:var(--bright);flex:1}
+.s-stats{display:flex;gap:14px;font-size:10px;font-family:var(--ff-mono);color:var(--slate)}
+.s-stats strong{color:var(--body)}
+.chevron{font-size:10px;color:var(--slate);transition:transform .2s}
+.s-hd.open .chevron{transform:rotate(90deg)}
+.crew-list{padding-left:18px;display:none;margin-top:6px}
+.s-hd.open+.crew-list{display:block}
+.c-blk{margin-bottom:8px}
+.c-hd{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--navy3);border:1px solid var(--border);border-radius:5px;cursor:pointer;transition:border-color .15s}
+.c-hd:hover,.c-hd.open{border-color:rgba(58,173,170,.25)}
+.c-name{font-size:12.5px;font-weight:600;color:var(--text);flex:1}
+.c-hd.open .chevron{transform:rotate(90deg)}
+.pod-list{padding-left:16px;display:none;margin-top:5px}
+.c-hd.open+.pod-list{display:block}
+.pod-card{margin-bottom:6px;background:var(--navy2);border:1px solid var(--border);border-radius:5px;overflow:hidden}
+.pod-hd{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;transition:background .15s}
+.pod-hd:hover{background:var(--navy3)}
+.pod-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.pod-sbar{width:70px;height:4px;background:var(--navy4);border-radius:2px;overflow:hidden}
+.pod-sfill{height:100%;border-radius:2px}
+.pod-detail{display:none;padding:8px 14px 12px;border-top:1px solid var(--border)}
+.pod-card.open .pod-detail{display:block}
+.pr-row{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid rgba(30,40,72,.5);font-size:11.5px}
+.pr-row:last-child{border:none}
+.locdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ld-on{background:#5599ff}.ld-near{background:var(--teal)}.ld-off{background:var(--amber)}
+
+/* ── TRANSFORMS ── */
+.tc{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:10px;overflow:hidden;transition:border-color .15s}
+.tc:hover{border-color:var(--border2)}
+.tc-hd{display:flex;align-items:center;gap:13px;padding:14px 18px;cursor:pointer}
+.tc-meta{flex:1;min-width:0}
+.tc-title{font-size:13px;font-weight:600;color:var(--bright)}
+.tc-sub{font-size:10px;color:var(--slate);font-family:var(--ff-mono);margin-top:2px}
+.tc-chev{color:var(--slate);font-size:10px;transition:transform .2s;flex-shrink:0}
+.tc.open .tc-chev{transform:rotate(180deg)}
+.tc-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border)}
+.tc.open .tc-body{display:block}
+.h-tabs{display:flex;gap:6px;margin:14px 0 12px}
+.htab{padding:5px 16px;border-radius:4px;font-size:10.5px;font-family:var(--ff-mono);cursor:pointer;border:1px solid var(--border);color:var(--slate2);transition:all .15s}
+.htab.active{background:var(--goldA);border-color:rgba(200,169,110,.3);color:var(--gold)}
+.hpanel{display:none}.hpanel.active{display:block}
+.prob-section{margin-bottom:14px}
+.prob-title{font-size:9px;font-family:var(--ff-mono);color:var(--slate);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.prob-row{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.prob-lbl{width:100px;flex-shrink:0}
+.prob-track{flex:1;background:var(--navy4);height:13px;border-radius:3px;overflow:hidden}
+.prob-fill{height:100%;border-radius:2px;display:flex;align-items:center;padding:0 5px;font-size:8px;font-family:var(--ff-mono);color:rgba(8,12,24,.9);font-weight:600;transition:width .8s ease}
+.skills-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:14px 0}
+.sk-lbl{font-size:9px;font-family:var(--ff-mono);color:var(--slate);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.sk-cloud{display:flex;flex-wrap:wrap;gap:4px}
+.rec-box{display:flex;align-items:flex-start;gap:12px;background:var(--navy4);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-top:12px}
+.rec-icon{font-size:18px;flex-shrink:0}
+.rec-right{flex:1}
+.rec-action{font-size:12.5px;font-weight:600;color:var(--bright);margin-bottom:3px}
+.rec-reason{font-size:11.5px;color:var(--slate2);line-height:1.55}
+.conf-pill{font-size:9px;font-family:var(--ff-mono);padding:2px 7px;border-radius:10px;flex-shrink:0;align-self:flex-start;margin-top:1px}
+.cp-hi{background:var(--greenA);color:var(--green)}.cp-me{background:var(--amberA);color:var(--amber)}.cp-lo{background:var(--redA);color:var(--red)}
+.reasoning-panel{background:var(--navy3);border-left:2px solid var(--gold);border-radius:0 5px 5px 0;padding:13px 16px;margin-top:12px;font-size:12px;color:var(--body);line-height:1.7}
+.rp-title{font-size:9px;font-family:var(--ff-mono);color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+
+/* ── SCENARIOS ── */
+.pod-btns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px}
+.pb{padding:6px 14px;border-radius:4px;font-size:11px;font-family:var(--ff-mono);cursor:pointer;border:1px solid var(--border);color:var(--slate2);background:var(--navy2);transition:all .15s}
+.pb:hover{border-color:var(--border2);color:var(--text)}
+.pb.active{background:var(--goldA);border-color:rgba(200,169,110,.3);color:var(--gold)}
+.current-state{background:var(--navy3);border:1px solid var(--border);border-radius:var(--r2);padding:18px 20px;margin-bottom:20px}
+.cs-title{font-size:12px;font-family:var(--ff-mono);color:var(--slate);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.cs-roles{display:flex;flex-wrap:wrap;gap:8px}
+.cs-role{display:flex;align-items:center;gap:7px;background:var(--navy2);border:1px solid var(--border);border-radius:4px;padding:7px 12px;font-size:12px}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+.sc{border-radius:var(--r2);border:1px solid;overflow:hidden}
+.sc-cons{border-color:rgba(74,170,122,.2);background:linear-gradient(180deg,rgba(74,170,122,.04) 0%,transparent 40%)}
+.sc-like{border-color:rgba(200,169,110,.25);background:linear-gradient(180deg,rgba(200,169,110,.05) 0%,transparent 40%)}
+.sc-aggr{border-color:rgba(217,95,95,.2);background:linear-gradient(180deg,rgba(217,95,95,.04) 0%,transparent 40%)}
+.sc-top{padding:18px 18px 14px}
+.sc-type-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sc-type{font-family:var(--ff-mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+.sc-cons .sc-type{color:var(--green)}.sc-like .sc-type{color:var(--gold)}.sc-aggr .sc-type{color:var(--red)}
+.sc-hc-big{font-family:var(--ff-disp);font-size:44px;font-weight:700;line-height:1;letter-spacing:-.03em}
+.sc-cons .sc-hc-big{color:var(--green)}.sc-like .sc-hc-big{color:var(--gold2)}.sc-aggr .sc-hc-big{color:var(--red)}
+.sc-hc-from{font-size:11px;color:var(--slate2);margin-top:4px;font-family:var(--ff-mono)}
+.sc-loc-row{display:flex;gap:6px;margin:14px 0}
+.sc-loc-cell{flex:1;background:rgba(8,12,24,.4);border-radius:4px;padding:7px 5px;text-align:center}
+.sc-loc-n{font-family:var(--ff-mono);font-size:15px;font-weight:500}
+.sc-loc-l{font-size:9px;color:var(--slate);margin-top:2px}
+.sc-cost{font-family:var(--ff-mono);font-size:12px;margin:10px 0 4px}
+.sc-cons .sc-cost{color:var(--green)}.sc-like .sc-cost{color:var(--gold)}.sc-aggr .sc-cost{color:var(--red)}
+.sc-divider{border:none;border-top:1px solid rgba(255,255,255,.06);margin:14px 0}
+.sc-roles-title{font-size:9px;font-family:var(--ff-mono);color:var(--slate);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px}
+.sc-role-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:4px;margin-bottom:5px;font-size:11.5px}
+.sc-role-item.fr-new{background:var(--greenA);border-left:2px solid var(--green)}
+.sc-role-item.fr-chg{background:var(--amberA);border-left:2px solid var(--amber)}
+.sc-role-item.fr-rem{background:var(--redA);border-left:2px solid var(--red);opacity:.7}
+.sc-role-item.fr-same{background:var(--navy4);border-left:2px solid var(--border2)}
+.fr-name{flex:1;color:var(--text)}
+.fr-hc{font-family:var(--ff-mono);font-size:10px;color:var(--slate)}
+.sc-bottom{padding:14px 18px;background:rgba(8,12,24,.25);border-top:1px solid rgba(255,255,255,.05)}
+.sc-assume-lbl{font-size:9px;font-family:var(--ff-mono);color:var(--slate);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.sc-assume-text{font-size:11px;color:var(--slate2);line-height:1.5}
+.deep-reason{background:var(--navy3);border:1px solid var(--border);border-radius:var(--r2);padding:20px 22px;margin-bottom:20px}
+.dr-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.dr-title{font-family:var(--ff-disp);font-size:15px;font-weight:600;color:var(--bright)}
+.dr-subtitle{font-size:11px;color:var(--slate);font-family:var(--ff-mono);margin-top:2px}
+.dr-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dr-block-title{font-size:9px;font-family:var(--ff-mono);color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.dr-block-body{font-size:12px;color:var(--body);line-height:1.7}
+.dr-block-body li{margin-bottom:5px;display:flex;gap:7px}
+.dr-block-body li::before{content:'→';color:var(--gold);flex-shrink:0}
+.dr-risk{background:var(--redA);border:1px solid rgba(217,95,95,.15);border-radius:5px;padding:10px 13px;margin-top:10px}
+.dr-risk-title{font-size:9px;font-family:var(--ff-mono);color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.dr-risk-body{font-size:11.5px;color:var(--body);line-height:1.5}
+.workforce-note{background:var(--goldB);border:1px solid rgba(200,169,110,.15);border-radius:5px;padding:12px 14px;margin-top:10px}
+.wn-title{font-size:9px;font-family:var(--ff-mono);color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.wn-body{font-size:11.5px;color:var(--body);line-height:1.5}
+.offshore-tbl{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-top:20px}
+.ot-header{display:grid;grid-template-columns:180px 1fr 1fr 1fr 100px;background:var(--navy4);border-bottom:1px solid var(--border);padding:10px 16px;font-size:9px;font-family:var(--ff-mono);color:var(--slate);text-transform:uppercase;letter-spacing:.08em}
+.ot-row{display:grid;grid-template-columns:180px 1fr 1fr 1fr 100px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center}
+.ot-row:last-child{border:none}
+.ot-stream{font-size:12.5px;color:var(--text);font-weight:500}
+.ot-cell{display:flex;align-items:center;gap:8px}
+.ot-bar{flex:1;height:6px;background:var(--navy4);border-radius:3px;overflow:hidden;max-width:80px}
+.ot-bar-f{height:100%;border-radius:3px}
+.ot-delta{font-family:var(--ff-mono);font-size:11px;font-weight:600;color:var(--red)}
+</style>
+</head>
+<body>
+<div id="tt"></div>
+
+<!-- ═══ LOAD SCREEN ═══ -->
+<div id="load-screen">
+  <div style="text-align:center">
+    <div class="ls-logo">PULSE</div>
+    <div class="ls-sub">People &amp; Labor AI Signal Explorer · v2.0</div>
+  </div>
+  <div class="ls-card">
+    <div class="ls-title">Load Organisation Data</div>
+    <div class="ls-desc">Upload a PULSE JSON data file to populate the dashboard with your organisation's roles, structure, and scenarios. Or load the FirstBank AG demo data to explore the tool.</div>
+    <div class="ls-drop" id="drop-zone">
+      <input type="file" accept=".json" id="file-input" onchange="handleFile(this.files[0])">
+      <div class="ls-drop-icon">📂</div>
+      <div class="ls-drop-text"><strong>Drop JSON file here</strong> or click to browse</div>
+      <div style="font-size:10px;color:var(--slate);font-family:var(--ff-mono);margin-top:6px">pulse_data.json · any PULSE-format file</div>
+    </div>
+    <div class="ls-or">OR</div>
+    <button class="ls-btn ls-btn-primary" onclick="loadDemo()">▶ Load FirstBank AG Demo Data</button>
+    <div class="ls-error" id="ls-error"></div>
+  </div>
+</div>
+
+<!-- ═══ APP SHELL ═══ -->
+<div class="shell" id="app-shell">
+  <aside class="sb">
+    <div class="sb-top">
+      <div class="sb-mark">
+        <div class="sb-logo"><span>P</span></div>
+        <div><div class="sb-wordmark">PULSE</div><div class="sb-version">VERSION 2.0</div></div>
+      </div>
+      <div class="sb-org">
+        <div class="sb-org-name" id="sb-org-name">—</div>
+        <div class="sb-org-sub" id="sb-org-sub">—</div>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Overview</div>
+        <div class="ni active" onclick="nav('ex')"><span class="ni-icon">◉</span><span>Executive Summary</span></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Analysis</div>
+        <div class="ni" onclick="nav('c1')"><span class="ni-icon">◎</span><span>Exposure Report</span><span class="ni-cap">C1</span></div>
+        <div class="ni" onclick="nav('c2')"><span class="ni-icon">⬡</span><span>Org View</span><span class="ni-cap">C2</span></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Forecast</div>
+        <div class="ni" onclick="nav('c3')"><span class="ni-icon">⟳</span><span>Role Transformation</span><span class="ni-cap">C3</span></div>
+        <div class="ni" onclick="nav('c4')"><span class="ni-icon">◈</span><span>Scenario Explorer</span><span class="ni-cap">C4</span></div>
+      </div>
+      <button class="sb-reload" onclick="reloadData()">↺ Load Different Data</button>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-model">Model: <span id="sb-model">—</span></div>
+      <div class="sb-model">Provider: <span id="sb-provider">—</span></div>
+      <div class="sb-date" id="sb-date">—</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- EXEC -->
+    <div class="pg active" id="pg-ex">
+      <div class="ph"><div class="ph-eye">Executive Summary</div>
+        <div class="ph-title">AI Workforce <em>Intelligence</em> Report</div>
+        <div class="ph-desc" id="ex-org-desc">—</div>
+      </div>
+      <div class="ex-banner">
+        <div style="font-family:var(--ff-mono);font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px">Overall Risk Assessment</div>
+        <div class="ex-headline" id="ex-headline">—</div>
+        <div class="ex-body" id="ex-body">—</div>
+        <div style="margin-top:20px">
+          <div style="font-size:9px;font-family:var(--ff-mono);color:var(--slate);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Division Risk Level</div>
+          <div class="risk-meter" id="risk-meter"></div>
+          <div class="rm-labels"><span>Low</span><span>Medium</span><span>High</span><span>Critical</span></div>
+        </div>
+      </div>
+      <div class="stat-row stat-row-4" id="ex-stats"></div>
+      <div class="slabel">Critical Findings</div>
+      <div id="ex-findings"></div>
+      <div class="slabel" style="margin-top:28px">Recommended Actions by Timeframe</div>
+      <div class="action-row" id="ex-actions"></div>
+      <div style="margin-top:28px;padding:16px 20px;background:var(--navy3);border:1px solid var(--border);border-radius:var(--r);font-size:11px;color:var(--slate);line-height:1.6;display:flex;gap:10px">
+        <span style="color:var(--gold);flex-shrink:0">◈</span>
+        <span><strong style="color:var(--body)">Methodology:</strong> Exposure scores based on AI auto-parsed role profiles assessed against current LLM capability benchmarks (Anthropic Economic Index, March 2026; Eloundou et al. 2023). Transformation forecasts are probabilistic predictions. All outputs require human governance before action.</span>
+      </div>
+    </div>
+    <!-- C1 -->
+    <div class="pg" id="pg-c1">
+      <div class="ph"><div class="ph-eye">Capability 1</div>
+        <div class="ph-title">AI <em>Exposure</em> Report</div>
+        <div class="ph-desc">Theoretical AI displacement risk scored per role based on AI-parsed task profiles.</div>
+      </div>
+      <div class="stat-row stat-row-4" id="c1-stats"></div>
+      <div class="slabel">Exposure Treemap — rectangle size = headcount</div>
+      <div class="card" style="padding:14px"><div id="tm"></div>
+        <div style="display:flex;gap:18px;margin-top:10px;font-size:10px;color:var(--slate)">
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--low-c);display:inline-block"></span>Low (0–4)</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--mid-c);display:inline-block"></span>Medium (5–6)</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--high-c);display:inline-block"></span>High (7–10)</span>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card"><div class="card-hd" style="font-size:13px">By Stream</div><div id="stream-bars"></div></div>
+        <div class="card"><div class="card-hd" style="font-size:13px">Top 8 Exposed Roles</div><div id="top-bars"></div></div>
+      </div>
+      <div class="slabel">All Roles — sorted by exposure</div>
+      <div class="card" style="padding:0 22px"><div id="roles-tbl"></div></div>
+    </div>
+    <!-- C2 -->
+    <div class="pg" id="pg-c2">
+      <div class="ph"><div class="ph-eye">Capability 2</div>
+        <div class="ph-title">Organisational <em>Structure</em> View</div>
+        <div class="ph-desc">AI exposure mapped across the Stream → Crew → Pod hierarchy. Click any row to expand.</div>
+      </div>
+      <div class="stat-row stat-row-5" id="c2-stats"></div>
+      <div id="loc-legend" style="display:flex;gap:18px;font-size:10.5px;color:var(--slate);margin-bottom:18px;flex-wrap:wrap"></div>
+      <div id="org-tree"></div>
+    </div>
+    <!-- C3 -->
+    <div class="pg" id="pg-c3">
+      <div class="ph"><div class="ph-eye">Capability 3</div>
+        <div class="ph-title">Role <em>Transformation</em> Forecast</div>
+        <div class="ph-desc">Predicted transformation archetypes, probability distributions, skills evolution, and recommended actions at 12 and 24 month horizons.</div>
+      </div>
+      <div class="disc"><span style="flex-shrink:0;font-size:14px;margin-top:1px">⚠</span><span>Probabilistic forecasts based on current AI capability benchmarks. Confidence bands reflect inherent uncertainty. All forecasts require human review before informing workforce decisions.</span></div>
+      <div class="stat-row stat-row-4" id="c3-stats"></div>
+      <div id="tc-list"></div>
+    </div>
+    <!-- C4 -->
+    <div class="pg" id="pg-c4">
+      <div class="ph"><div class="ph-eye">Capability 4 · Scenario Explorer</div>
+        <div class="ph-title">Future <em>Delivery Structure</em></div>
+        <div class="ph-desc">A peek into the future. Three scenarios show how each Pod might evolve given projected role transformations.</div>
+      </div>
+      <div class="disc"><span style="flex-shrink:0;font-size:14px;margin-top:1px">◈</span><span><strong style="color:var(--amber)">Analytical scenarios — not decisions.</strong> Each scenario rests on explicit AI adoption assumptions. Workforce decisions require HR governance and leadership sign-off.</span></div>
+      <div class="slabel">Select Pod</div>
+      <div class="pod-btns" id="pod-btns"></div>
+      <div id="sc-view"></div>
+      <div class="slabel" style="margin-top:32px">Offshore Impact — Likely Scenario · Stream Level</div>
+      <div class="offshore-tbl">
+        <div class="ot-header"><span>Stream</span><span>Current</span><span>Conservative</span><span>Likely</span><span>Delta</span></div>
+        <div id="off-rows"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let D = null; // loaded data
+
+// ═══════════════════════════════════════════════════
+// LOAD SCREEN
+// ═══════════════════════════════════════════════════
+
+// Drag and drop
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+
+function handleFile(file) {
+  if (!file || !file.name.endsWith('.json')) { showError('Please upload a .json file.'); return; }
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      loadData(data);
+    } catch(err) {
+      showError('Invalid JSON: ' + err.message);
+    }
+  };
+  r.readAsText(file);
+}
+
+function loadDemo() {
+  // Inline minimal demo — triggers fetch of pulse_data.json if served,
+  // otherwise uses the bundled DEMO_DATA constant below
+  try {
+    fetch('pulse_data.json')
+      .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+      .then(data => loadData(data))
+      .catch(() => loadData(DEMO_DATA));
+  } catch(e) {
+    loadData(DEMO_DATA);
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('ls-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function reloadData() {
+  D = null;
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('load-screen').style.display = 'flex';
+}
+
+function loadData(data) {
+  try {
+    // Basic validation
+    if (!data.roles || !data.orgStructure || !data.organisation) throw new Error('Missing required sections: roles, orgStructure, organisation');
+    D = data;
+    document.getElementById('load-screen').style.display = 'none';
+    document.getElementById('app-shell').style.display = 'grid';
+    initApp();
+  } catch(e) {
+    showError('Data validation error: ' + e.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════
+function nav(id) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  document.getElementById('pg-' + id).classList.add('active');
+  document.querySelector(`[onclick="nav('${id}')"]`).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════
+const sc  = s => s >= 7 ? 'sr-hi' : s >= 5 ? 'sr-mi' : 'sr-lo';
+const sco = s => s >= 7 ? '#d95f5f' : s >= 5 ? '#d4843a' : '#4aaa7a';
+const bf  = s => s >= 7 ? 'bf-hi' : s >= 5 ? 'bf-mi' : 'bf-lo';
+const lt  = l => l === 'onsite' ? 't-on' : l === 'nearshore' ? 't-near' : 't-off';
+const ll  = l => l === 'onsite' ? 'Onsite' : l === 'nearshore' ? 'Nearshore' : 'Offshore';
+const at  = a => ({Augmented:'t-aug',Transformed:'t-trans',Merged:'t-merge',Obsolete:'t-obs',New:'t-new'})[a] || 't-aug';
+const cp  = c => c === 'high' ? 'cp-hi' : c === 'medium' ? 'cp-me' : 'cp-lo';
+const fmt = n => n?.toLocaleString() ?? '—';
+
+// ═══════════════════════════════════════════════════
+// INIT — wire everything from D
+// ═══════════════════════════════════════════════════
+function initApp() {
+  const org = D.organisation;
+  document.getElementById('sb-org-name').textContent = org.name;
+  document.getElementById('sb-org-sub').textContent  = `${org.division} · ${org.location}`;
+  document.getElementById('sb-model').textContent    = org.model || '—';
+  document.getElementById('sb-provider').textContent = org.provider || '—';
+  document.getElementById('sb-date').textContent     = `Analysis: ${org.analysisDate || '—'}`;
+
+  buildExec();
+  buildC1();
+  buildC2();
+  buildC3();
+  buildC4();
+}
+
+// ═══════════════════════════════════════════════════
+// EXEC SUMMARY
+// ═══════════════════════════════════════════════════
+function buildExec() {
+  const ex = D.executiveSummary;
+  if (!ex) return;
+  const org = D.organisation;
+
+  document.getElementById('ex-org-desc').textContent =
+    `Prepared for the IT Leadership Team · ${org.name} · ${org.analysisDate || ''}`;
+  document.getElementById('ex-headline').textContent = ex.headline;
+  document.getElementById('ex-body').textContent     = ex.body;
+
+  // Risk meter (1–10)
+  const lvl = ex.riskLevel || 5;
+  const colors = ['#4aaa7a','#5aaa6a','#8ab840','#d4a020','#d4843a','#d46030','#d95f5f','#c94444','#b83030','#a02020'];
+  document.getElementById('risk-meter').innerHTML =
+    colors.map((c, i) => `<div class="rm-seg ${i === lvl-1 ? 'active' : ''}" style="background:${c}"></div>`).join('');
+
+  // Stats derived from roles
+  const roles = D.roles;
+  const totalHC = roles.reduce((a,r) => a + r.headcount, 0);
+  const wAvg = roles.reduce((a,r) => a + r.score * r.headcount, 0) / totalHC;
+  const highHC = roles.filter(r => r.score >= 7).reduce((a,r) => a + r.headcount, 0);
+  const wages = roles.filter(r => r.score >= 7 && r.salary).reduce((a,r) => a + r.salary * r.headcount, 0);
+
+  document.getElementById('ex-stats').innerHTML = `
+    <div class="stat gold"><div class="s-lbl">Roles Analysed</div><div class="s-val gold">${roles.length}</div><div class="s-sub">${totalHC.toLocaleString()} total FTE</div></div>
+    <div class="stat red"><div class="s-lbl">Weighted Avg Exposure</div><div class="s-val red">${wAvg.toFixed(1)}</div><div class="s-sub">Out of 10</div></div>
+    <div class="stat amber"><div class="s-lbl">FTE at High Risk</div><div class="s-val amber">${highHC}</div><div class="s-sub">${Math.round(highHC/totalHC*100)}% of ${totalHC} FTE</div></div>
+    <div class="stat teal"><div class="s-lbl">Annual Wages at Risk</div><div class="s-val teal">${wages ? 'CHF '+Math.round(wages/1e6)+'M' : '—'}</div><div class="s-sub">High-exposure roles (score ≥7)</div></div>`;
+
+  document.getElementById('ex-findings').innerHTML = (ex.findings || []).map(f => `
+    <div class="finding">
+      <div class="finding-num">${f.number}</div>
+      <div><div class="finding-title">${f.title}</div><div class="finding-body">${f.body}</div></div>
+    </div>`).join('');
+
+  document.getElementById('ex-actions').innerHTML = (ex.actions || []).map(a => `
+    <div class="action-card">
+      <div class="ac-time">${a.timeframe}</div>
+      <div class="ac-title">${a.title}</div>
+      <div class="ac-body">${a.body}</div>
+      <div class="ac-tags">${(a.tags || []).map(t => `<span class="tag t-new" style="font-size:9px">${t}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// C1 EXPOSURE
+// ═══════════════════════════════════════════════════
+function buildC1() {
+  const roles = D.roles;
+  const totalHC = roles.reduce((a,r) => a + r.headcount, 0);
+  const wAvg = roles.reduce((a,r) => a + r.score * r.headcount, 0) / totalHC;
+  const highHC = roles.filter(r => r.score >= 7).reduce((a,r) => a + r.headcount, 0);
+  const wages = roles.filter(r => r.score >= 7 && r.salary).reduce((a,r) => a + r.salary * r.headcount, 0);
+
+  document.getElementById('c1-stats').innerHTML = `
+    <div class="stat gold"><div class="s-lbl">Roles Analysed</div><div class="s-val gold">${roles.length}</div><div class="s-sub">${totalHC.toLocaleString()} total FTE</div></div>
+    <div class="stat red"><div class="s-lbl">Avg Score</div><div class="s-val red">${wAvg.toFixed(1)}</div><div class="s-sub">Out of 10</div></div>
+    <div class="stat amber"><div class="s-lbl">High Exposure FTE</div><div class="s-val amber">${highHC}</div><div class="s-sub">Score ≥7 · ${Math.round(highHC/totalHC*100)}% of workforce</div></div>
+    <div class="stat teal"><div class="s-lbl">Wages at Risk</div><div class="s-val teal">${wages ? 'CHF '+Math.round(wages/1e6)+'M' : '—'}</div><div class="s-sub">Annual, high-exposure roles</div></div>`;
+
+  buildTM();
+
+  // Stream bars
+  const streams = {};
+  roles.forEach(r => {
+    if (!streams[r.stream]) streams[r.stream] = { t: 0, hc: 0 };
+    streams[r.stream].t += r.score * r.hc; streams[r.stream].hc += r.headcount;
+  });
+  document.getElementById('stream-bars').innerHTML =
+    Object.entries(streams).map(([s,v]) => ({ l:s, sc:v.t/v.hc }))
+      .sort((a,b) => b.sc - a.sc)
+      .map(d => `<div class="brow"><div class="blbl" title="${d.l}">${d.l}</div><div class="btrack"><div class="bfill ${bf(d.sc)}" style="width:${d.sc*10}%">${d.sc.toFixed(1)}</div></div></div>`)
+      .join('');
+
+  // Top 8
+  document.getElementById('top-bars').innerHTML =
+    [...roles].sort((a,b) => b.score - a.score).slice(0,8)
+      .map(r => `<div class="brow"><div class="blbl" title="${r.title}">${r.title}</div><div class="btrack"><div class="bfill ${bf(r.score)}" style="width:${r.score*10}%">${r.score}</div></div></div>`)
+      .join('');
+
+  // Table
+  document.getElementById('roles-tbl').innerHTML =
+    [...roles].sort((a,b) => b.score - a.score).map(r => `
+      <div class="rrow">
+        <div class="sr ${sc(r.score)}">${r.score}</div>
+        <div class="rinfo">
+          <div class="rtitle">${r.title}</div>
+          <div class="rmeta">
+            <span style="font-size:10.5px;color:var(--slate);font-family:var(--ff-mono)">${r.stream} · ${r.pod}</span>
+            <span class="tag ${lt(r.location)}">${ll(r.location)}</span>
+            <span style="font-size:10.5px;color:var(--slate)">${r.headcount} FTE${r.salary ? ' · CHF '+r.salary.toLocaleString() : ''}</span>
+          </div>
+          <div class="rdrivers">${(r.drivers||[]).map(d => `<div class="rdriv">${d}</div>`).join('')}</div>
+        </div>
+      </div>`).join('');
+}
+
+function buildTM() {
+  const el = document.getElementById('tm');
+  el.innerHTML = '';
+  const W = el.parentElement.clientWidth - 28;
+  const H = Math.max(240, Math.min(400, W * 0.44));
+  const data = { name:'root', children: D.roles.map(r => ({ name:r.title, value:Math.max(r.headcount,1), score:r.score, stream:r.stream })) };
+  const root = d3.hierarchy(data).sum(d => d.value);
+  d3.treemap().size([W,H]).padding(2)(root);
+  const svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
+  const tt = document.getElementById('tt');
+  const cell = svg.selectAll('g').data(root.leaves()).join('g').attr('transform', d => `translate(${d.x0},${d.y0})`);
+  cell.append('rect')
+    .attr('width', d => Math.max(0,d.x1-d.x0)).attr('height', d => Math.max(0,d.y1-d.y0))
+    .attr('fill', d => sco(d.data.score)).attr('opacity',.78).attr('rx',2)
+    .on('mousemove',(e,d) => {
+      tt.style.opacity=1; tt.style.left=(e.clientX+14)+'px'; tt.style.top=(e.clientY-10)+'px';
+      tt.innerHTML = `<strong style="color:var(--bright)">${d.data.name}</strong><br><span style="color:var(--gold)">Score ${d.data.score}/10 · ${d.data.value} FTE</span><br><span style="font-size:10px;color:var(--slate)">${d.data.stream}</span>`;
+    }).on('mouseleave', () => tt.style.opacity = 0);
+  cell.each(function(d){
+    const w=d.x1-d.x0, h=d.y1-d.y0; if(w<30||h<18) return;
+    const g=d3.select(this), mx=Math.floor(w/7); let lines=[],cur='';
+    d.data.name.split(' ').forEach(w=>{if((cur+' '+w).trim().length<=mx)cur=(cur+' '+w).trim();else{if(cur)lines.push(cur);cur=w;}});
+    if(cur)lines.push(cur); lines=lines.slice(0,h>42?3:1);
+    lines.forEach((ln,i) => g.append('text').attr('x',4).attr('y',13+i*12).attr('fill','rgba(8,12,24,.85)').attr('font-size','10px').attr('font-family','IBM Plex Sans,sans-serif').attr('font-weight','600').text(ln));
+    if(h>42) g.append('text').attr('x',4).attr('y',h-5).attr('fill','rgba(8,12,24,.55)').attr('font-size','9px').attr('font-family','IBM Plex Mono,monospace').text(d.data.score+'/10');
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// C2 ORG TREE
+// ═══════════════════════════════════════════════════
+function buildC2() {
+  const roles = D.roles;
+  const rm = {}; roles.forEach(r => rm[r.id] = r);
+  const wAvg = ids => { const t=ids.reduce((a,id)=>a+rm[id].score*rm[id].headcount,0),h=ids.reduce((a,id)=>a+rm[id].headcount,0); return t/h; };
+  const tHC  = ids => ids.reduce((a,id) => a + rm[id].headcount, 0);
+  const totalHC = roles.reduce((a,r) => a + r.headcount, 0);
+  const streams = [...new Set(roles.map(r => r.stream))];
+  const crews   = [...new Set(roles.map(r => r.crew).filter(Boolean))];
+  const pods    = [...new Set(roles.map(r => r.pod).filter(Boolean))];
+  const offHC   = roles.filter(r => r.location === 'offshore').reduce((a,r) => a + r.headcount, 0);
+
+  document.getElementById('c2-stats').innerHTML = `
+    <div class="stat gold"><div class="s-lbl">Streams</div><div class="s-val gold">${streams.length}</div></div>
+    <div class="stat teal"><div class="s-lbl">Crews</div><div class="s-val teal">${crews.length}</div></div>
+    <div class="stat gold"><div class="s-lbl">Pods</div><div class="s-val gold">${pods.length}</div></div>
+    <div class="stat amber"><div class="s-lbl">Total FTE</div><div class="s-val amber">${totalHC}</div></div>
+    <div class="stat red"><div class="s-lbl">Offshore FTE</div><div class="s-val red">${offHC}</div><div class="s-sub">${Math.round(offHC/totalHC*100)}% of total</div></div>`;
+
+  // Location legend from data
+  const locs = D.locationTiers || [
+    {id:'onsite',label:'Onsite',description:'HQ',dotClass:'ld-on'},
+    {id:'nearshore',label:'Nearshore',description:'Nearshore',dotClass:'ld-near'},
+    {id:'offshore',label:'Offshore',description:'Offshore',dotClass:'ld-off'}
+  ];
+  document.getElementById('loc-legend').innerHTML =
+    ['Location:',
+     ...locs.map(l => `<span style="display:flex;align-items:center;gap:5px"><span class="locdot ${l.dotClass}"></span>${l.label} · ${l.description}</span>`)
+    ].map((s,i) => i===0 ? `<span>${s}</span>` : s).join('');
+
+  document.getElementById('org-tree').innerHTML = D.orgStructure.map(s => {
+    const ar = s.crews.flatMap(c => c.pods.flatMap(p => p.roles));
+    return `<div class="stream-blk">
+      <div class="s-hd" onclick="this.classList.toggle('open');event.stopPropagation()">
+        <div style="width:8px;height:8px;border-radius:50%;background:${sco(wAvg(ar))};flex-shrink:0"></div>
+        <div class="s-name">${s.stream}</div>
+        <div class="s-stats"><span>Avg Score: <strong>${wAvg(ar).toFixed(1)}</strong></span><span>FTE: <strong>${tHC(ar)}</strong></span><span>Offshore: <strong>${Math.round(ar.filter(id=>rm[id]?.location==='offshore').reduce((a,id)=>a+(rm[id]?.headcount||0),0)/tHC(ar)*100)}%</strong></span></div>
+        <div class="chevron">▶</div>
+      </div>
+      <div class="crew-list">${s.crews.map(c => {
+        const cr = c.pods.flatMap(p => p.roles);
+        return `<div class="c-blk">
+          <div class="c-hd" onclick="this.classList.toggle('open');event.stopPropagation()">
+            <div class="c-name">${c.crew}</div>
+            <div style="font-size:10px;color:var(--slate);font-family:var(--ff-mono)">Avg ${wAvg(cr).toFixed(1)} · ${tHC(cr)} FTE</div>
+            <div class="chevron" style="margin-left:8px">▶</div>
+          </div>
+          <div class="pod-list">${c.pods.map(p => {
+            const ps = wAvg(p.roles), phc = tHC(p.roles);
+            return `<div class="pod-card" onclick="this.classList.toggle('open')">
+              <div class="pod-hd">
+                <div class="pod-dot" style="background:${sco(ps)}"></div>
+                <div style="flex:1;font-size:12px;font-weight:500;color:var(--text)">${p.pod}</div>
+                <div class="pod-sbar"><div class="pod-sfill" style="width:${ps*10}%;background:${sco(ps)}"></div></div>
+                <div style="font-size:10px;font-family:var(--ff-mono);color:var(--slate);width:45px;text-align:right">${phc} FTE</div>
+                <div style="font-size:10px;font-family:var(--ff-mono);color:${sco(ps)};width:30px;text-align:right">${ps.toFixed(1)}</div>
+              </div>
+              <div class="pod-detail">${p.roles.map(id => {
+                const r = rm[id]; if(!r) return '';
+                const ldCls = r.location==='onsite'?'ld-on':r.location==='nearshore'?'ld-near':'ld-off';
+                return `<div class="pr-row">
+                  <div class="locdot ${ldCls}"></div>
+                  <div style="flex:1;color:var(--text);font-size:11.5px">${r.title}</div>
+                  <div style="font-family:var(--ff-mono);font-size:10px;color:var(--slate);width:35px;text-align:center">${r.headcount}</div>
+                  <div class="sr ${sc(r.score)}" style="width:28px;height:28px;font-size:11px">${r.score}</div>
+                  <span class="tag ${lt(r.location)}" style="font-size:9px">${ll(r.location)}</span>
+                </div>`;
+              }).join('')}</div>
+            </div>`;
+          }).join('')}</div>
+        </div>`;
+      }).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// C3 TRANSFORMS
+// ═══════════════════════════════════════════════════
+function buildC3() {
+  const transforms = D.transformations || [];
+
+  // Summary stats
+  const aug  = transforms.filter(t => t.horizon12.outcomes[0]?.archetype === 'Augmented').length;
+  const trans = transforms.filter(t => t.horizon12.outcomes.some(o => o.archetype==='Transformed' && o.probability >= 30)).length;
+  const obs   = transforms.filter(t => t.horizon24.outcomes.some(o => (o.archetype==='Obsolete'||o.archetype==='Merged') && o.probability >= 40)).length;
+  const nnew  = [...new Set(transforms.flatMap(t => [...(t.horizon12.skillsNew||[]),...(t.horizon24.skillsNew||[])]))].length;
+
+  document.getElementById('c3-stats').innerHTML = `
+    <div class="stat teal"><div class="s-lbl">Augmented</div><div class="s-val teal">${aug}</div><div class="s-sub">Same title · AI-assisted</div></div>
+    <div class="stat amber"><div class="s-lbl">Transforming</div><div class="s-val amber">${trans}</div><div class="s-sub">New skills · same domain</div></div>
+    <div class="stat red"><div class="s-lbl">Obsolete / Merged</div><div class="s-val red">${obs}</div><div class="s-sub">Within 24 months</div></div>
+    <div class="stat green"><div class="s-lbl">New Skills Emerging</div><div class="s-val green">${nnew}</div><div class="s-sub">AI-native capabilities</div></div>`;
+
+  document.getElementById('tc-list').innerHTML = transforms.map(t => {
+    const renderH = (h, hz) => `
+      <div class="hpanel ${hz==='12m'?'active':''}" data-hz="${hz}">
+        <div class="prob-section">
+          <div class="prob-title">Transformation Probability Distribution</div>
+          ${(h.outcomes||[]).map(o => `
+            <div class="prob-row">
+              <div class="prob-lbl"><span class="tag ${at(o.archetype)}" style="font-size:9px">${o.archetype}</span></div>
+              <div class="prob-track"><div class="prob-fill" style="width:${o.probability}%;background:${o.color||'#4a80d4'}">${o.probability}%</div></div>
+            </div>`).join('')}
+        </div>
+        <div class="skills-grid">
+          <div><div class="sk-lbl">Skills Fading</div><div class="sk-cloud">${(h.skillsDecreasing||[]).map(s=>`<span class="tag t-dec" style="font-size:9px">${s}</span>`).join('')}</div></div>
+          <div><div class="sk-lbl">Skills Rising</div><div class="sk-cloud">${(h.skillsIncreasing||[]).map(s=>`<span class="tag t-inc" style="font-size:9px">${s}</span>`).join('')}</div></div>
+          <div><div class="sk-lbl">New Skills Required</div><div class="sk-cloud">${(h.skillsNew||[]).map(s=>`<span class="tag t-nnew" style="font-size:9px">${s}</span>`).join('')}</div></div>
+        </div>
+        <div class="rec-box">
+          <div class="rec-icon">${h.actionIcon||'💡'}</div>
+          <div class="rec-right">
+            <div class="rec-action">${h.recommendedAction||'Monitor'}</div>
+            <div class="rec-reason">${(h.reasoning||'').substring(0,110)}…</div>
+          </div>
+          <span class="conf-pill ${cp(h.confidence||'medium')}">${h.confidence||'medium'}</span>
+        </div>
+        <div class="reasoning-panel"><div class="rp-title">Full Analysis</div>${h.reasoning||''}</div>
+      </div>`;
+
+    const role = D.roles.find(r => r.id === t.roleId);
+    const score = t.score || role?.score || 5;
+    return `<div class="tc" id="tc-${t.roleId}">
+      <div class="tc-hd" onclick="document.getElementById('tc-${t.roleId}').classList.toggle('open')">
+        <div class="sr ${sc(score)}">${score}</div>
+        <div class="tc-meta">
+          <div class="tc-title">${t.title}</div>
+          <div class="tc-sub">${t.stream || ''}</div>
+        </div>
+        <div style="display:flex;gap:5px;margin-right:10px">
+          ${(t.horizon12.outcomes||[]).slice(0,2).map(o=>`<span class="tag ${at(o.archetype)}" style="font-size:9px">${o.archetype} ${o.probability}%</span>`).join('')}
+        </div>
+        <div class="tc-chev">▼</div>
+      </div>
+      <div class="tc-body">
+        <div class="h-tabs">
+          <div class="htab active" onclick="swH('${t.roleId}','12m',this)">12 Months</div>
+          <div class="htab" onclick="swH('${t.roleId}','24m',this)">24 Months</div>
+        </div>
+        ${renderH(t.horizon12,'12m')}
+        ${renderH(t.horizon24,'24m')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function swH(id, hz, el) {
+  const tc = document.getElementById('tc-' + id);
+  tc.querySelectorAll('.htab').forEach(t => t.classList.remove('active')); el.classList.add('active');
+  tc.querySelectorAll('.hpanel').forEach(p => p.classList.toggle('active', p.dataset.hz === hz));
+}
+
+// ═══════════════════════════════════════════════════
+// C4 SCENARIOS
+// ═══════════════════════════════════════════════════
+function buildC4() {
+  const scenarios = D.scenarios || [];
+  document.getElementById('pod-btns').innerHTML =
+    scenarios.map((s,i) => `<div class="pb ${i===0?'active':''}" onclick="selPod('${s.podName}',this)">${s.podName}</div>`).join('');
+  if (scenarios.length) renderPod(scenarios[0].podName);
+
+  // Offshore table
+  const maxV = Math.max(...(D.offshoreImpact||[]).map(d => d.current), 1);
+  document.getElementById('off-rows').innerHTML = (D.offshoreImpact||[]).map(d => `
+    <div class="ot-row">
+      <div class="ot-stream">${d.stream}</div>
+      <div class="ot-cell"><div class="ot-bar"><div class="ot-bar-f" style="width:${d.current/maxV*100}%;background:var(--slate)"></div></div><span style="font-family:var(--ff-mono);font-size:11px;color:var(--body)">${d.current}</span></div>
+      <div class="ot-cell"><div class="ot-bar"><div class="ot-bar-f" style="width:${d.conservative/maxV*100}%;background:var(--green)"></div></div><span style="font-family:var(--ff-mono);font-size:11px;color:var(--green)">${d.conservative}</span></div>
+      <div class="ot-cell"><div class="ot-bar"><div class="ot-bar-f" style="width:${d.likely/maxV*100}%;background:var(--gold)"></div></div><span style="font-family:var(--ff-mono);font-size:11px;color:var(--gold)">${d.likely}</span></div>
+      <div class="ot-delta">−${d.current - d.likely} FTE</div>
+    </div>`).join('');
+}
+
+function selPod(pod, el) {
+  document.querySelectorAll('.pb').forEach(b => b.classList.remove('active')); el.classList.add('active');
+  renderPod(pod);
+}
+
+function renderPod(podName) {
+  const s = D.scenarios.find(x => x.podName === podName);
+  if (!s) return;
+
+  const ti = {
+    conservative:{cls:'sc-cons',lbl:'Conservative',conf:'high'},
+    likely:{cls:'sc-like',lbl:'Likely',conf:'medium'},
+    aggressive:{cls:'sc-aggr',lbl:'Aggressive',conf:'low'}
+  };
+
+  const locDot = l => `<div class="locdot ${l==='onsite'?'ld-on':l==='nearshore'?'ld-near':'ld-off'}"></div>`;
+
+  const cur = `<div class="current-state">
+    <div class="cs-title">Current State · ${s.current.totalHeadcount} FTE</div>
+    <div class="cs-roles">${s.current.roles.map(r => `
+      <div class="cs-role">${locDot(r.location)}<span style="color:var(--text);font-size:12px">${r.name}</span><span style="font-family:var(--ff-mono);font-size:10px;color:var(--slate)">×${r.headcount}</span><span class="tag ${lt(r.location)}" style="font-size:9px">${ll(r.location)}</span></div>`).join('')}
+    </div>
+  </div>`;
+
+  const cards = `<div class="sc-grid">${['conservative','likely','aggressive'].map(type => {
+    const sc2 = s[type]; const t = ti[type];
+    return `<div class="sc ${t.cls}">
+      <div class="sc-top">
+        <div class="sc-type-row">
+          <div class="sc-type">${t.lbl}</div>
+          <span class="conf-pill ${cp(t.conf)}">${t.conf}</span>
+        </div>
+        <div class="sc-hc-big">${sc2.headcount}</div>
+        <div class="sc-hc-from">FTE · from ${s.current.totalHeadcount} today</div>
+        <div class="sc-loc-row">
+          <div class="sc-loc-cell"><div class="sc-loc-n" style="color:#5599ff">${sc2.locationSplit?.onsite||0}</div><div class="sc-loc-l">Onsite</div></div>
+          <div class="sc-loc-cell"><div class="sc-loc-n" style="color:var(--teal)">${sc2.locationSplit?.nearshore||0}</div><div class="sc-loc-l">Nearshore</div></div>
+          <div class="sc-loc-cell"><div class="sc-loc-n" style="color:var(--amber)">${sc2.locationSplit?.offshore||0}</div><div class="sc-loc-l">Offshore</div></div>
+        </div>
+        <div class="sc-cost">${sc2.costDelta > 0 ? '+' : ''}${Math.round(sc2.costDelta*100)}% cost delta vs today</div>
+        <hr class="sc-divider">
+        <div class="sc-roles-title">Future Role Composition</div>
+        ${(sc2.roles||[]).map(r => `
+          <div class="sc-role-item fr-${r.type||'same'}">
+            <span class="tag ${r.type==='new'?'t-new':r.type==='chg'?'t-trans':r.type==='rem'?'t-obs':''}" style="font-size:8px">${r.type==='new'?'new':r.type==='chg'?'changed':r.type==='rem'?'removed':'same'}</span>
+            <span class="fr-name">${r.name}</span><span class="fr-hc">×${r.headcount}</span>
+          </div>`).join('')}
+      </div>
+      <div class="sc-bottom">
+        <div class="sc-assume-lbl">Key Assumption</div>
+        <div class="sc-assume-text">${sc2.assumption||''}</div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+
+  const likely = s.likely;
+  const deep = `<div class="deep-reason">
+    <div class="dr-header"><div style="font-size:20px">◈</div>
+      <div><div class="dr-title">Likely Scenario — Deep Analysis</div>
+      <div class="dr-subtitle" style="margin-top:2px">Strategic reasoning · workforce impact · leadership actions</div></div>
+    </div>
+    <div style="font-size:12.5px;color:var(--body);line-height:1.7;margin-bottom:16px">${likely.reasoning||''}</div>
+    <div class="dr-grid">
+      <div>
+        <div class="dr-block-title">Workforce Impact</div>
+        <div class="workforce-note"><div class="wn-title">Location Strategy</div><div class="wn-body">${likely.workforceImpact||''}</div></div>
+        <div class="dr-risk" style="margin-top:10px"><div class="dr-risk-title">Key Risk</div><div class="dr-risk-body">${likely.risk||''}</div></div>
+      </div>
+      <div>
+        <div class="dr-block-title">Recommended Leadership Actions</div>
+        <div class="dr-block-body"><ul style="list-style:none">${(likely.leadershipActions||[]).map(a=>`<li>${a}</li>`).join('')}</ul></div>
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('sc-view').innerHTML = cur + cards + deep;
+}
+
+// ═══════════════════════════════════════════════════
+// DEMO DATA (bundled fallback — same as pulse_data.json)
+// This constant is the only place that needs updating
+// when the JSON file format changes.
+// ═══════════════════════════════════════════════════
+const DEMO_DATA = {"organisation":{"name":"FirstBank AG","division":"IT Division","location":"Zürich HQ","analysisDate":"28 Mar 2026","model":"Claude Sonnet 4.5","provider":"Anthropic"},"locationTiers":[{"id":"onsite","label":"Onsite","description":"Zürich HQ","cssClass":"t-on","dotClass":"ld-on"},{"id":"nearshore","label":"Nearshore","description":"Warsaw / Lisbon","cssClass":"t-near","dotClass":"ld-near"},{"id":"offshore","label":"Offshore","description":"Bangalore / Manila","cssClass":"t-off","dotClass":"ld-off"}],"roles":[{"id":"r01","title":"Senior Full Stack Developer","stream":"Digital Banking","crew":"Mobile & Web","pod":"Mobile Pod","headcount":6,"salary":128000,"location":"onsite","score":8,"drivers":["AI code generation at 70%+ acceptance rate in production","PR review and code analysis AI-automated","Architecture decisions remain human-led"]},{"id":"r02","title":"Junior Full Stack Developer","stream":"Digital Banking","crew":"Mobile & Web","pod":"Mobile Pod","headcount":8,"salary":82000,"location":"offshore","score":9,"drivers":["Feature implementation tasks fully AI-generatable","Entry-level work absorbed into senior+AI pairing model","No differentiated skill resisting automation"]},{"id":"r03","title":"Product Owner","stream":"Digital Banking","crew":"Mobile & Web","pod":"Mobile Pod","headcount":1,"salary":135000,"location":"onsite","score":4,"drivers":["Stakeholder management requires human relationship skills","Vision and strategy not automatable","Backlog prioritisation AI-assisted but judgment-dependent"]},{"id":"r04","title":"UX Designer","stream":"Digital Banking","crew":"Mobile & Web","pod":"Mobile Pod","headcount":2,"salary":105000,"location":"nearshore","score":6,"drivers":["UI generation tools maturing rapidly","Component library creation largely automatable","User research and facilitation remain human-led"]},{"id":"r05","title":"Senior Full Stack Developer","stream":"Digital Banking","crew":"Mobile & Web","pod":"Web Banking Pod","headcount":5,"salary":128000,"location":"onsite","score":8,"drivers":["Same profile as Mobile Pod counterpart","Complex business logic still needs architecture oversight","AI pair programming at production quality"]},{"id":"r06","title":"QA Engineer","stream":"Digital Banking","crew":"Mobile & Web","pod":"Web Banking Pod","headcount":4,"salary":88000,"location":"offshore","score":8,"drivers":["Test script generation fully automated","Regression suite AI-managed end-to-end","Exploratory and edge-case testing remains human"]},{"id":"r07","title":"API Integration Specialist","stream":"Digital Banking","crew":"API Platform","pod":"API Pod","headcount":5,"salary":110000,"location":"nearshore","score":8,"drivers":["Integration boilerplate code 80%+ generatable","API documentation and schema auto-generated","Domain expertise in financial protocols still required"]},{"id":"r08","title":"DevOps Engineer","stream":"Digital Banking","crew":"API Platform","pod":"API Pod","headcount":3,"salary":122000,"location":"onsite","score":7,"drivers":["IaC and pipeline configuration AI-generated at high quality","Runbook documentation fully automated","Incident reasoning and platform governance remain human"]},{"id":"r09","title":"SAP Functional Consultant","stream":"Enterprise Systems","crew":"Core Banking","pod":"SAP Core Pod","headcount":5,"salary":132000,"location":"nearshore","score":6,"drivers":["Configuration docs and functional specs AI-assisted","Process design requires business domain knowledge","Regulatory mapping needs expert human sign-off"]},{"id":"r10","title":"ABAP Developer","stream":"Enterprise Systems","crew":"Core Banking","pod":"SAP Core Pod","headcount":6,"salary":115000,"location":"offshore","score":8,"drivers":["ABAP code generation reaching production quality","Enhancement development largely automatable","Core customisation logic still needs SAP expertise"]},{"id":"r11","title":"Core Banking Integration Dev","stream":"Enterprise Systems","crew":"Core Banking","pod":"Core Banking Pod","headcount":4,"salary":120000,"location":"offshore","score":7,"drivers":["Integration pattern code 70% AI-generatable","Legacy system mapping AI-assisted","Regulatory mapping requires human accountability"]},{"id":"r12","title":"Business Analyst","stream":"Enterprise Systems","crew":"Core Banking","pod":"Core Banking Pod","headcount":5,"salary":95000,"location":"nearshore","score":7,"drivers":["Requirements documents AI-generated from interview notes","Process maps and gap analyses automated","Stakeholder facilitation and negotiation remain human"]},{"id":"r13","title":"Payments Engineer","stream":"Enterprise Systems","crew":"Payments","pod":"Payments Pod","headcount":4,"salary":125000,"location":"onsite","score":6,"drivers":["Payment scheme logic requires regulatory expertise","Integration code AI-assisted but scheme knowledge critical","Real-time system design needs senior oversight"]},{"id":"r14","title":"Test Analyst — Payments","stream":"Enterprise Systems","crew":"Payments","pod":"Payments Pod","headcount":5,"salary":78000,"location":"offshore","score":9,"drivers":["Payment test scripts fully AI-generatable","End-to-end regression fully automated","UAT coordination still requires human stakeholder management"]},{"id":"r15","title":"Data Engineer — Risk","stream":"Risk & Compliance","crew":"Risk Data","pod":"Risk Reporting Pod","headcount":4,"salary":115000,"location":"nearshore","score":7,"drivers":["ETL pipeline code generation highly automatable","Data quality checks AI-driven","Risk model implementation requires domain expertise"]},{"id":"r16","title":"Risk Reporting Analyst","stream":"Risk & Compliance","crew":"Risk Data","pod":"Risk Reporting Pod","headcount":6,"salary":92000,"location":"offshore","score":8,"drivers":["SQL and report generation fully automatable","Variance commentary AI-generated at publication quality","Regulatory submission sign-off requires human accountability"]},{"id":"r17","title":"GRC Analyst","stream":"Risk & Compliance","crew":"Compliance","pod":"GRC Pod","headcount":4,"salary":102000,"location":"onsite","score":6,"drivers":["Policy drafting AI-assisted but judgment-intensive","Control testing AI-augmented significantly","Regulatory interpretation requires certified expertise"]},{"id":"r18","title":"Cybersecurity Analyst","stream":"Risk & Compliance","crew":"Compliance","pod":"GRC Pod","headcount":4,"salary":118000,"location":"onsite","score":6,"drivers":["L1 alert triage AI-automated at 80%","Incident report drafting AI-assisted","Threat hunting and novel attack analysis human-led"]},{"id":"r19","title":"Penetration Tester","stream":"Risk & Compliance","crew":"Compliance","pod":"Security Pod","headcount":3,"salary":132000,"location":"onsite","score":5,"drivers":["Report writing AI-assisted — significant time saving","Standard scan execution automated","Novel exploit identification requires creative human reasoning"]},{"id":"r20","title":"Cloud Infrastructure Engineer","stream":"Infrastructure","crew":"Platform","pod":"Cloud Pod","headcount":5,"salary":122000,"location":"onsite","score":7,"drivers":["Terraform / IaC AI-generated at high quality","Cloud cost optimisation AI-managed","Architecture and platform decisions need senior oversight"]},{"id":"r21","title":"Network Engineer","stream":"Infrastructure","crew":"Platform","pod":"Network Pod","headcount":4,"salary":108000,"location":"onsite","score":5,"drivers":["Physical configuration requires hands-on access","Network runbooks AI-generated — time saving","Complex fault diagnosis remains human-led"]},{"id":"r22","title":"IT Support Specialist","stream":"Infrastructure","crew":"End User","pod":"Service Desk Pod","headcount":12,"salary":62000,"location":"offshore","score":8,"drivers":["80% of L1 tickets resolvable by AI agents today","Password resets and access provisioning fully automated","Complex escalations require human judgement and empathy"]},{"id":"r23","title":"IT Service Manager","stream":"Infrastructure","crew":"End User","pod":"Service Desk Pod","headcount":2,"salary":112000,"location":"onsite","score":4,"drivers":["Vendor relationship management requires human negotiation","SLA governance needs strategic context","Reporting and dashboards AI-automated — time saving"]}],"orgStructure":[{"stream":"Digital Banking","crews":[{"crew":"Mobile & Web","pods":[{"pod":"Mobile Pod","roles":["r01","r02","r03","r04"]},{"pod":"Web Banking Pod","roles":["r05","r06"]}]},{"crew":"API Platform","pods":[{"pod":"API Pod","roles":["r07","r08"]}]}]},{"stream":"Enterprise Systems","crews":[{"crew":"Core Banking","pods":[{"pod":"SAP Core Pod","roles":["r09","r10"]},{"pod":"Core Banking Pod","roles":["r11","r12"]}]},{"crew":"Payments","pods":[{"pod":"Payments Pod","roles":["r13","r14"]}]}]},{"stream":"Risk & Compliance","crews":[{"crew":"Risk Data","pods":[{"pod":"Risk Reporting Pod","roles":["r15","r16"]}]},{"crew":"Compliance","pods":[{"pod":"GRC Pod","roles":["r17","r18"]},{"pod":"Security Pod","roles":["r19"]}]}]},{"stream":"Infrastructure","crews":[{"crew":"Platform","pods":[{"pod":"Cloud Pod","roles":["r20"]},{"pod":"Network Pod","roles":["r21"]}]},{"crew":"End User","pods":[{"pod":"Service Desk Pod","roles":["r22","r23"]}]}]}],"transformations":[{"roleId":"r01","title":"Senior Full Stack Developer","stream":"Digital Banking","score":8,"horizon12":{"outcomes":[{"archetype":"Augmented","probability":50,"color":"#4a80d4"},{"archetype":"Transformed","probability":35,"color":"#d4843a"},{"archetype":"Merged","probability":15,"color":"#8470cc"}],"skillsDecreasing":["Manual unit testing","Boilerplate feature coding","PR checklist execution"],"skillsIncreasing":["AI output code review","Architecture leadership","System design at scale"],"skillsNew":["LLM prompt engineering","AI workflow orchestration"],"recommendedAction":"Reskill Now","actionIcon":"⚡","confidence":"high","reasoning":"Within 12 months this role retains full employment but shifts fundamentally toward AI orchestration — steering and validating AI-generated code rather than authoring it. Senior developers who invest in AI tooling now will see productivity multipliers of 3–5×, making them disproportionately valuable."},"horizon24":{"outcomes":[{"archetype":"Transformed","probability":55,"color":"#d4843a"},{"archetype":"Merged","probability":30,"color":"#8470cc"},{"archetype":"New","probability":15,"color":"#4aaa7a"}],"skillsDecreasing":["Individual code authoring","Unit test writing","Manual debugging"],"skillsIncreasing":["AI system design","Cross-functional orchestration","AI governance"],"skillsNew":["Agentic workflow design","Multi-model coordination","AI output assurance"],"recommendedAction":"Redesign Role","actionIcon":"◈","confidence":"medium","reasoning":"By 24 months this role converges with Solution Architect in AI-mature organisations. A single senior engineer orchestrating AI agents across the full stack replaces the traditional Senior/Junior pairing. Recommend redesigning the role profile now."}},{"roleId":"r02","title":"Junior Full Stack Developer","stream":"Digital Banking","score":9,"horizon12":{"outcomes":[{"archetype":"Augmented","probability":30,"color":"#4a80d4"},{"archetype":"Obsolete","probability":40,"color":"#d95f5f"},{"archetype":"Merged","probability":30,"color":"#8470cc"}],"skillsDecreasing":["Feature implementation","Bug fixing","Unit test authoring"],"skillsIncreasing":["AI tool operation","Output quality checking"],"skillsNew":["AI Prompt Specialist"],"recommendedAction":"Hiring Freeze","actionIcon":"⛔","confidence":"high","reasoning":"The 40% obsolescence probability at 12 months is the strongest near-term signal. Junior developers perform tasks now at the frontier of production AI capability. Organisations should cease new junior developer hiring immediately."},"horizon24":{"outcomes":[{"archetype":"Obsolete","probability":65,"color":"#d95f5f"},{"archetype":"Merged","probability":25,"color":"#8470cc"},{"archetype":"New","probability":10,"color":"#4aaa7a"}],"skillsDecreasing":["All current primary tasks","Feature coding","Test writing"],"skillsIncreasing":[],"skillsNew":["AI Prompt Specialist","AI QA Analyst","AI Code Reviewer"],"recommendedAction":"Plan Exit","actionIcon":"⚠","confidence":"medium","reasoning":"The standalone junior developer role is unlikely to exist in its current form in high-AI-adoption organisations by 2028. HR should begin proactive redeployment planning, particularly for offshore junior headcount."}},{"roleId":"r22","title":"IT Support Specialist","stream":"Infrastructure","score":8,"horizon12":{"outcomes":[{"archetype":"Augmented","probability":40,"color":"#4a80d4"},{"archetype":"Obsolete","probability":35,"color":"#d95f5f"},{"archetype":"Merged","probability":25,"color":"#8470cc"}],"skillsDecreasing":["Password resets","L1 ticket resolution","Software installs","Access provisioning"],"skillsIncreasing":["AI agent supervision","Complex issue escalation"],"skillsNew":["AI Service Desk Agent Operator"],"recommendedAction":"Hiring Freeze","actionIcon":"⛔","confidence":"high","reasoning":"L1 support is the most immediately automatable function. AI agents handle 60–80% of L1 ticket types at production quality today. 12 offshore IT Support Specialists face direct displacement within 12–18 months."},"horizon24":{"outcomes":[{"archetype":"Obsolete","probability":60,"color":"#d95f5f"},{"archetype":"New","probability":25,"color":"#4aaa7a"},{"archetype":"Augmented","probability":15,"color":"#4a80d4"}],"skillsDecreasing":["All routine ticket handling","Standard access management"],"skillsIncreasing":[],"skillsNew":["IT AI Agent Manager","User Experience Analyst","Complex Support Specialist"],"recommendedAction":"Plan Exit","actionIcon":"⚠","confidence":"high","reasoning":"The Service Desk in its current form will not exist by 2028. Begin structured workforce transition planning for this cohort now."}},{"roleId":"r16","title":"Risk Reporting Analyst","stream":"Risk & Compliance","score":8,"horizon12":{"outcomes":[{"archetype":"Augmented","probability":45,"color":"#4a80d4"},{"archetype":"Merged","probability":35,"color":"#8470cc"},{"archetype":"Obsolete","probability":20,"color":"#d95f5f"}],"skillsDecreasing":["SQL query writing","Report formatting","Data extraction scripting"],"skillsIncreasing":["AI output governance","Regulatory interpretation","Exception analysis"],"skillsNew":["AI Reporting Governance"],"recommendedAction":"Reskill Now","actionIcon":"⚡","confidence":"high","reasoning":"Risk report generation is automatable at publication quality today. One analyst with AI tools replaces three without. FINMA regulatory frameworks are beginning to require documented AI governance for automated reporting."},"horizon24":{"outcomes":[{"archetype":"Merged","probability":50,"color":"#8470cc"},{"archetype":"Obsolete","probability":35,"color":"#d95f5f"},{"archetype":"Transformed","probability":15,"color":"#d4843a"}],"skillsDecreasing":["Report production","Data pulling","Commentary generation"],"skillsIncreasing":["Regulatory judgment","Stakeholder narrative","AI model governance"],"skillsNew":["Risk AI Analyst","Regulatory AI Officer"],"recommendedAction":"Redesign Role","actionIcon":"◈","confidence":"medium","reasoning":"The Risk AI Analyst combines data literacy, regulatory expertise, and AI output governance. Current headcount of 6 reduces to 2–3. Plan redeployment proactively."}},{"roleId":"r08","title":"DevOps Engineer","stream":"Digital Banking","score":7,"horizon12":{"outcomes":[{"archetype":"Augmented","probability":55,"color":"#4a80d4"},{"archetype":"Transformed","probability":30,"color":"#d4843a"},{"archetype":"Merged","probability":15,"color":"#8470cc"}],"skillsDecreasing":["IaC boilerplate writing","Pipeline config scripting","Runbook authoring"],"skillsIncreasing":["Platform architecture","AI deployment governance","SRE and reliability design"],"skillsNew":["AI Infrastructure Engineer"],"recommendedAction":"Reskill Now","actionIcon":"⚡","confidence":"high","reasoning":"DevOps engineers who adopt AI tooling become dramatically more productive. The transformation reflects a role identity shift from 'builds pipelines' to 'governs the platform AI agents run on.'"},"horizon24":{"outcomes":[{"archetype":"Transformed","probability":60,"color":"#d4843a"},{"archetype":"New","probability":25,"color":"#4aaa7a"},{"archetype":"Merged","probability":15,"color":"#8470cc"}],"skillsDecreasing":["Manual pipeline maintenance","Script writing","Standard configuration"],"skillsIncreasing":["AI agent infrastructure","Platform governance","Agentic deployment patterns"],"skillsNew":["AI Platform Engineer","MLOps Specialist","Agentic Systems Architect"],"recommendedAction":"Redesign Role","actionIcon":"◈","confidence":"medium","reasoning":"The platform engineering role of 2028 is fundamentally about making AI agents reliable, observable, and governable. This is one of the few transformations in this analysis where the outcome is upskilling rather than displacement."}},{"roleId":"r19","title":"Penetration Tester","stream":"Risk & Compliance","score":5,"horizon12":{"outcomes":[{"archetype":"Augmented","probability":70,"color":"#4a80d4"},{"archetype":"Transformed","probability":20,"color":"#d4843a"},{"archetype":"Merged","probability":10,"color":"#8470cc"}],"skillsDecreasing":["Report boilerplate writing","Standard scan interpretation"],"skillsIncreasing":["AI tool chain orchestration","Red team strategy design","Novel attack vector research"],"skillsNew":["AI-assisted exploit research"],"recommendedAction":"Monitor","actionIcon":"👁","confidence":"high","reasoning":"Penetration testing is among the most resilient roles. The adversarial, creative nature of offensive security requires human intuition that AI cannot replicate within the forecast horizon."},"horizon24":{"outcomes":[{"archetype":"Augmented","probability":50,"color":"#4a80d4"},{"archetype":"Transformed","probability":40,"color":"#d4843a"},{"archetype":"Merged","probability":10,"color":"#8470cc"}],"skillsDecreasing":["Manual scan execution","Standard compliance reports"],"skillsIncreasing":["AI Red Team design","Adversarial ML expertise","AI system attack research"],"skillsNew":["AI Red Team Specialist","AI Security Researcher"],"recommendedAction":"Monitor","actionIcon":"👁","confidence":"medium","reasoning":"By 24 months the role evolves toward AI Red Teaming — testing AI systems themselves for vulnerabilities. This is a growth area mandated by emerging AI governance regulation."}}],"scenarios":[{"podName":"Mobile Pod","current":{"totalHeadcount":17,"roles":[{"name":"Senior Full Stack Dev","headcount":6,"location":"onsite"},{"name":"Junior Full Stack Dev","headcount":8,"location":"offshore"},{"name":"Product Owner","headcount":1,"location":"onsite"},{"name":"UX Designer","headcount":2,"location":"nearshore"}]},"conservative":{"headcount":14,"costDelta":-0.08,"locationSplit":{"onsite":6,"nearshore":2,"offshore":6},"roles":[{"name":"Senior Full Stack Dev","headcount":6,"type":"same"},{"name":"Junior Full Stack Dev","headcount":5,"type":"chg"},{"name":"Product Owner","headcount":1,"type":"same"},{"name":"UX Designer","headcount":2,"type":"same"}],"assumption":"AI code generation at ~35% acceptance. Junior roles reduce through attrition only.","reasoning":"Conservative scenario assumes cautious adoption. Headcount reduces through natural attrition. Cost saving of 8% reflects productivity gain without structural change.","risk":"If AI adoption accelerates, savings are left on the table and competitors gain structural cost advantage.","workforceImpact":"Offshore impact minimal. Junior developer attrition not backfilled. No active redeployment required.","leadershipActions":["Monitor AI acceptance rates quarterly","Begin voluntary reskilling for 2 junior developers","Review junior hiring policy"]},"likely":{"headcount":10,"costDelta":-0.31,"locationSplit":{"onsite":5,"nearshore":2,"offshore":3},"roles":[{"name":"Senior Full Stack Dev","headcount":5,"type":"same"},{"name":"Junior Full Stack Dev","headcount":2,"type":"chg"},{"name":"Product Owner","headcount":1,"type":"same"},{"name":"UX Designer","headcount":1,"type":"chg"},{"name":"AI Prompt Engineer","headcount":1,"type":"new"}],"assumption":"AI code generation reaches 65% acceptance within 18 months. Senior+AI pairing model deployed.","reasoning":"One senior developer with AI tools delivers the output of 2–3 without. Offshore junior headcount reduces from 8 to 3. Pod shrinks from 17 to 10 FTEs — same delivery capacity, 31% lower cost base.","risk":"AI adoption may be delayed by compliance review cycles or model reliability concerns in production banking.","workforceImpact":"6 offshore junior developers impacted. 2 reskilling candidates identified. 3 require managed transition.","leadershipActions":["Structured reskilling for 2 junior devs → AI Prompt Engineer pathway","Managed transition plan for 3 offshore roles","Redesign UX Designer role profile","Hire or reskill 1 AI Prompt Engineer"]},"aggressive":{"headcount":6,"costDelta":-0.54,"locationSplit":{"onsite":4,"nearshore":1,"offshore":1},"roles":[{"name":"Senior Full Stack Dev","headcount":3,"type":"chg"},{"name":"AI Orchestrator","headcount":1,"type":"new"},{"name":"Product Owner","headcount":1,"type":"same"},{"name":"AI UX Designer","headcount":1,"type":"new"}],"assumption":"Full agentic coding deployment. AI generates, tests, and deploys features with minimal human authoring.","reasoning":"Three senior engineers orchestrate AI agents for the full delivery pipeline. All 8 offshore junior roles eliminated. Pod of 6 replaces Pod of 17 — 54% cost reduction.","risk":"High. Banking regulatory requirements may constrain autonomous deployment. Significant transition risk.","workforceImpact":"8 offshore junior roles eliminated. Active redeployment or exit required.","leadershipActions":["Board-level approval required","Regulatory counsel on autonomous code deployment","Structured 18-month exit programme for offshore cohort"]}},{"podName":"Service Desk Pod","current":{"totalHeadcount":14,"roles":[{"name":"IT Support Specialist","headcount":12,"location":"offshore"},{"name":"IT Service Manager","headcount":2,"location":"onsite"}]},"conservative":{"headcount":10,"costDelta":-0.18,"locationSplit":{"onsite":2,"nearshore":0,"offshore":8},"roles":[{"name":"IT Support Specialist","headcount":8,"type":"chg"},{"name":"IT Service Manager","headcount":2,"type":"same"}],"assumption":"AI chatbot resolves 40% of L1 tickets. Human agents handle remaining volume.","reasoning":"Maintains bulk of offshore service desk while AI handles routine ticket types. Headcount reduces from 12 to 8 through attrition.","risk":"Conservative assumption may prove optimistic if AI support agents mature faster.","workforceImpact":"4 offshore roles eliminated through attrition. No active transition required.","leadershipActions":["Deploy AI chatbot for top 5 ticket types","Measure resolution rate quarterly","Do not backfill natural attrition"]},"likely":{"headcount":5,"costDelta":-0.58,"locationSplit":{"onsite":3,"nearshore":0,"offshore":2},"roles":[{"name":"AI Agent Supervisor","headcount":2,"type":"new"},{"name":"IT Service Manager","headcount":1,"type":"chg"},{"name":"Complex Support Specialist","headcount":2,"type":"chg"}],"assumption":"AI agents resolve 75% of L1 and L2 tickets autonomously.","reasoning":"12 offshore IT Support roles reduce to 2 complex-case specialists. Cost saving of CHF 1.4M annually for this Pod alone. Offshore headcount from 12 to 2.","risk":"Transition complexity is high. Poor AI agent experiences during transition can cause user trust damage.","workforceImpact":"10 offshore IT Support roles impacted. 2 highest-performers reskilled to Complex Support Specialist. Remaining 10 managed transition over 12 months.","leadershipActions":["Define Complex Support Specialist job profile immediately","Select 2 offshore high-performers for onsite reskilling","Design AI Agent Supervisor training programme","Commission AI service desk platform evaluation"]},"aggressive":{"headcount":3,"costDelta":-0.74,"locationSplit":{"onsite":3,"nearshore":0,"offshore":0},"roles":[{"name":"IT AI Platform Owner","headcount":1,"type":"new"},{"name":"Senior IT Specialist","headcount":2,"type":"new"}],"assumption":"End-to-end agentic service desk. AI handles all routine and 90% of complex tickets.","reasoning":"Fully automated service desk with a small onsite team of three. All offshore presence eliminated.","risk":"Critical. Full elimination of offshore presence requires immediate planning. Reputational risk of large-scale redundancies.","workforceImpact":"All 12 offshore IT Support roles eliminated. Full managed transition programme required with 18-month lead time.","leadershipActions":["Legal review of offshore employment obligations","Board risk register — reputational and operational","Define 24-month managed transition with severance framework","Engage CHRO and Legal before any communication to offshore teams"]}},{"podName":"Risk Reporting Pod","current":{"totalHeadcount":10,"roles":[{"name":"Risk Reporting Analyst","headcount":6,"location":"offshore"},{"name":"Data Engineer — Risk","headcount":4,"location":"nearshore"}]},"conservative":{"headcount":8,"costDelta":-0.12,"locationSplit":{"onsite":0,"nearshore":4,"offshore":4},"roles":[{"name":"Risk Reporting Analyst","headcount":4,"type":"chg"},{"name":"Data Engineer — Risk","headcount":4,"type":"same"}],"assumption":"AI assists report generation. All outputs require mandatory human review per regulatory requirement.","reasoning":"Maintains data engineering intact and reduces analyst headcount modestly. FINMA regulatory caution constrains full automation.","risk":"Regulatory interpretation may be more permissive than assumed.","workforceImpact":"2 offshore analyst roles eliminated through attrition. No active transition required.","leadershipActions":["Engage Risk Legal on regulatory AI governance","Deploy AI reporting tools","Assess which reports qualify for AI-assisted generation"]},"likely":{"headcount":6,"costDelta":-0.35,"locationSplit":{"onsite":2,"nearshore":2,"offshore":2},"roles":[{"name":"Risk AI Analyst","headcount":2,"type":"new"},{"name":"Data Engineer — Risk","headcount":2,"type":"chg"},{"name":"Reporting Governance Lead","headcount":1,"type":"new"},{"name":"Regulatory Liaison","headcount":1,"type":"new"}],"assumption":"AI generates 80% of standard risk reports. Analysts focus on exception analysis and regulatory narrative.","reasoning":"The Risk AI Analyst combines data literacy, regulatory expertise, and AI output governance. 4 offshore analysts reduced to 2 specialist roles, moving from offshore to nearshore.","risk":"Risk AI Analyst profile is scarce. Reskilling from existing cohort may take 18 months.","workforceImpact":"4 offshore analysts impacted. 2 reskilled to Risk AI Analyst (nearshore). Remaining 2 managed transition.","leadershipActions":["Define Risk AI Analyst job profile","Engage FINMA AI governance consultation","Identify 2 highest-capability analysts for reskilling","Commission AI reporting platform assessment"]},"aggressive":{"headcount":4,"costDelta":-0.52,"locationSplit":{"onsite":2,"nearshore":2,"offshore":0},"roles":[{"name":"Risk AI Analyst","headcount":2,"type":"new"},{"name":"Senior Data Engineer","headcount":1,"type":"chg"},{"name":"Regulatory AI Officer","headcount":1,"type":"new"}],"assumption":"Near-autonomous risk reporting with continuous AI monitoring and exception alerting.","reasoning":"Offshore presence eliminated as remaining roles require regulatory judgment and business proximity. A new Regulatory AI Officer manages the interface with FINMA/ECB.","risk":"Regulatory AI Officer is a net-new role with no established market salary. FINMA guidance is still developing.","workforceImpact":"6 offshore analyst roles impacted. 2 reskilled. Remaining 4 managed exit over 18 months.","leadershipActions":["Immediate engagement with FINMA on AI governance obligations","External search for Regulatory AI Officer — 6 month lead time","Structured 18-month transition for offshore roles"]}}],"offshoreImpact":[{"stream":"Digital Banking","current":52,"conservative":44,"likely":28},{"stream":"Enterprise Systems","current":46,"conservative":38,"likely":26},{"stream":"Risk & Compliance","current":28,"conservative":22,"likely":14},{"stream":"Infrastructure","current":22,"conservative":16,"likely":4}],"executiveSummary":{"headline":"52% of the IT workforce operates in roles with high AI displacement exposure — concentrated in functions that are already being actively automated.","body":"Analysis of 35 roles across 357 FTE reveals a division at a structural inflection point. The near-term risk is not mass redundancy — it is a quiet hollowing out of junior and routine roles, particularly in offshore locations, while senior roles transform into AI orchestration functions. Without deliberate action, the organisation risks both talent pipeline disruption and missed productivity gains.","riskLevel":7,"findings":[{"number":1,"title":"Junior and routine roles face imminent displacement — particularly offshore","body":"Junior developers, test analysts, and IT support specialists — the majority offshore — are performing tasks that AI tools can now execute at production quality. The Likely scenario projects a 51% reduction in offshore headcount (148 → 72 FTE) within 24 months."},{"number":2,"title":"Senior roles are transforming, not disappearing — but the window to act is narrow","body":"Senior engineers, DevOps professionals, and data engineers face high theoretical exposure but low near-term obsolescence risk. Their roles are transforming into AI orchestration, platform governance, and system design functions."},{"number":3,"title":"Five new AI-native roles are emerging that do not currently exist in the division","body":"AI Orchestrator, AI Platform Engineer, Risk AI Analyst, AI Agent Supervisor, and Regulatory AI Officer are roles the division will need within 18–24 months. Building these capabilities through reskilling is faster and cheaper than external hiring."}],"actions":[{"timeframe":"Immediate · 0–3 months","title":"Freeze junior hiring in high-exposure roles","body":"Halt new recruitment for Junior Developer, Test Analyst, and L1 Support roles in offshore locations. Redirect headcount budget to AI reskilling programmes.","tags":["Offshore","Engineering"]},{"timeframe":"Short-term · 3–12 months","title":"Launch AI reskilling programme for top 40 exposed roles","body":"Design structured reskilling pathways for Senior Developers, DevOps Engineers, and Business Analysts. Target: 60% of high-exposure FTE enrolled within 9 months.","tags":["All Streams"]},{"timeframe":"Strategic · 12–24 months","title":"Redesign Pod structure for AI-augmented delivery","body":"Begin Pod redesign based on Scenario Explorer projections. Pilot with Mobile Pod and Service Desk Pod. Establish new AI-native roles.","tags":["Digital Banking","Infrastructure"]}]}};
+
+window.addEventListener('resize', () => { if(D) { document.getElementById('tm').innerHTML=''; buildTM(); }});
+</script>
+</body>
+</html>

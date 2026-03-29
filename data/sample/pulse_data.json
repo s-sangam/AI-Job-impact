@@ -1,0 +1,895 @@
+{
+  "_comment": "PULSE 2.0 — Externalized Data Configuration. Edit this file to load your own organisation's data into the mockup. See PULSE_data_guide.md for field definitions and instructions.",
+  "_version": "2.0",
+  "_generated": "2026-03-28",
+
+  "organisation": {
+    "name": "FirstBank AG",
+    "division": "IT Division",
+    "location": "Zürich HQ",
+    "analysisDate": "28 Mar 2026",
+    "model": "Claude Sonnet 4.5",
+    "provider": "Anthropic"
+  },
+
+  "locationTiers": [
+    { "id": "onsite",    "label": "Onsite",    "description": "Zürich HQ",           "cssClass": "t-on",   "dotClass": "ld-on"   },
+    { "id": "nearshore", "label": "Nearshore", "description": "Warsaw / Lisbon",     "cssClass": "t-near", "dotClass": "ld-near" },
+    { "id": "offshore",  "label": "Offshore",  "description": "Bangalore / Manila",  "cssClass": "t-off",  "dotClass": "ld-off"  }
+  ],
+
+  "roles": [
+    {
+      "id": "r01",
+      "title": "Senior Full Stack Developer",
+      "stream": "Digital Banking",
+      "crew": "Mobile & Web",
+      "pod": "Mobile Pod",
+      "headcount": 6,
+      "salary": 128000,
+      "location": "onsite",
+      "score": 8,
+      "drivers": [
+        "AI code generation at 70%+ acceptance rate in production",
+        "PR review and code analysis AI-automated",
+        "Architecture decisions remain human-led"
+      ]
+    },
+    {
+      "id": "r02",
+      "title": "Junior Full Stack Developer",
+      "stream": "Digital Banking",
+      "crew": "Mobile & Web",
+      "pod": "Mobile Pod",
+      "headcount": 8,
+      "salary": 82000,
+      "location": "offshore",
+      "score": 9,
+      "drivers": [
+        "Feature implementation tasks fully AI-generatable",
+        "Entry-level work absorbed into senior+AI pairing model",
+        "No differentiated skill resisting automation"
+      ]
+    },
+    {
+      "id": "r03",
+      "title": "Product Owner",
+      "stream": "Digital Banking",
+      "crew": "Mobile & Web",
+      "pod": "Mobile Pod",
+      "headcount": 1,
+      "salary": 135000,
+      "location": "onsite",
+      "score": 4,
+      "drivers": [
+        "Stakeholder management requires human relationship skills",
+        "Vision and strategy not automatable",
+        "Backlog prioritisation AI-assisted but judgment-dependent"
+      ]
+    },
+    {
+      "id": "r04",
+      "title": "UX Designer",
+      "stream": "Digital Banking",
+      "crew": "Mobile & Web",
+      "pod": "Mobile Pod",
+      "headcount": 2,
+      "salary": 105000,
+      "location": "nearshore",
+      "score": 6,
+      "drivers": [
+        "UI generation tools maturing rapidly",
+        "Component library creation largely automatable",
+        "User research and facilitation remain human-led"
+      ]
+    },
+    {
+      "id": "r05",
+      "title": "Senior Full Stack Developer",
+      "stream": "Digital Banking",
+      "crew": "Mobile & Web",
+      "pod": "Web Banking Pod",
+      "headcount": 5,
+      "salary": 128000,
+      "location": "onsite",
+      "score": 8,
+      "drivers": [
+        "Same profile as Mobile Pod counterpart",
+        "Complex business logic still needs architecture oversight",
+        "AI pair programming at production quality"
+      ]
+    },
+    {
+      "id": "r06",
+      "title": "QA Engineer",
+      "stream": "Digital Banking",
+      "crew": "Mobile & Web",
+      "pod": "Web Banking Pod",
+      "headcount": 4,
+      "salary": 88000,
+      "location": "offshore",
+      "score": 8,
+      "drivers": [
+        "Test script generation fully automated",
+        "Regression suite AI-managed end-to-end",
+        "Exploratory and edge-case testing remains human"
+      ]
+    },
+    {
+      "id": "r07",
+      "title": "API Integration Specialist",
+      "stream": "Digital Banking",
+      "crew": "API Platform",
+      "pod": "API Pod",
+      "headcount": 5,
+      "salary": 110000,
+      "location": "nearshore",
+      "score": 8,
+      "drivers": [
+        "Integration boilerplate code 80%+ generatable",
+        "API documentation and schema auto-generated",
+        "Domain expertise in financial protocols still required"
+      ]
+    },
+    {
+      "id": "r08",
+      "title": "DevOps Engineer",
+      "stream": "Digital Banking",
+      "crew": "API Platform",
+      "pod": "API Pod",
+      "headcount": 3,
+      "salary": 122000,
+      "location": "onsite",
+      "score": 7,
+      "drivers": [
+        "IaC and pipeline configuration AI-generated at high quality",
+        "Runbook documentation fully automated",
+        "Incident reasoning and platform governance remain human"
+      ]
+    },
+    {
+      "id": "r09",
+      "title": "SAP Functional Consultant",
+      "stream": "Enterprise Systems",
+      "crew": "Core Banking",
+      "pod": "SAP Core Pod",
+      "headcount": 5,
+      "salary": 132000,
+      "location": "nearshore",
+      "score": 6,
+      "drivers": [
+        "Configuration docs and functional specs AI-assisted",
+        "Process design requires business domain knowledge",
+        "Regulatory mapping needs expert human sign-off"
+      ]
+    },
+    {
+      "id": "r10",
+      "title": "ABAP Developer",
+      "stream": "Enterprise Systems",
+      "crew": "Core Banking",
+      "pod": "SAP Core Pod",
+      "headcount": 6,
+      "salary": 115000,
+      "location": "offshore",
+      "score": 8,
+      "drivers": [
+        "ABAP code generation reaching production quality",
+        "Enhancement development largely automatable",
+        "Core customisation logic still needs SAP expertise"
+      ]
+    },
+    {
+      "id": "r11",
+      "title": "Core Banking Integration Dev",
+      "stream": "Enterprise Systems",
+      "crew": "Core Banking",
+      "pod": "Core Banking Pod",
+      "headcount": 4,
+      "salary": 120000,
+      "location": "offshore",
+      "score": 7,
+      "drivers": [
+        "Integration pattern code 70% AI-generatable",
+        "Legacy system mapping AI-assisted",
+        "Regulatory mapping requires human accountability"
+      ]
+    },
+    {
+      "id": "r12",
+      "title": "Business Analyst",
+      "stream": "Enterprise Systems",
+      "crew": "Core Banking",
+      "pod": "Core Banking Pod",
+      "headcount": 5,
+      "salary": 95000,
+      "location": "nearshore",
+      "score": 7,
+      "drivers": [
+        "Requirements documents AI-generated from interview notes",
+        "Process maps and gap analyses automated",
+        "Stakeholder facilitation and negotiation remain human"
+      ]
+    },
+    {
+      "id": "r13",
+      "title": "Payments Engineer",
+      "stream": "Enterprise Systems",
+      "crew": "Payments",
+      "pod": "Payments Pod",
+      "headcount": 4,
+      "salary": 125000,
+      "location": "onsite",
+      "score": 6,
+      "drivers": [
+        "Payment scheme logic requires regulatory expertise",
+        "Integration code AI-assisted but scheme knowledge critical",
+        "Real-time system design needs senior oversight"
+      ]
+    },
+    {
+      "id": "r14",
+      "title": "Test Analyst — Payments",
+      "stream": "Enterprise Systems",
+      "crew": "Payments",
+      "pod": "Payments Pod",
+      "headcount": 5,
+      "salary": 78000,
+      "location": "offshore",
+      "score": 9,
+      "drivers": [
+        "Payment test scripts fully AI-generatable",
+        "End-to-end regression fully automated",
+        "UAT coordination still requires human stakeholder management"
+      ]
+    },
+    {
+      "id": "r15",
+      "title": "Data Engineer — Risk",
+      "stream": "Risk & Compliance",
+      "crew": "Risk Data",
+      "pod": "Risk Reporting Pod",
+      "headcount": 4,
+      "salary": 115000,
+      "location": "nearshore",
+      "score": 7,
+      "drivers": [
+        "ETL pipeline code generation highly automatable",
+        "Data quality checks AI-driven",
+        "Risk model implementation requires domain expertise"
+      ]
+    },
+    {
+      "id": "r16",
+      "title": "Risk Reporting Analyst",
+      "stream": "Risk & Compliance",
+      "crew": "Risk Data",
+      "pod": "Risk Reporting Pod",
+      "headcount": 6,
+      "salary": 92000,
+      "location": "offshore",
+      "score": 8,
+      "drivers": [
+        "SQL and report generation fully automatable",
+        "Variance commentary AI-generated at publication quality",
+        "Regulatory submission sign-off requires human accountability"
+      ]
+    },
+    {
+      "id": "r17",
+      "title": "GRC Analyst",
+      "stream": "Risk & Compliance",
+      "crew": "Compliance",
+      "pod": "GRC Pod",
+      "headcount": 4,
+      "salary": 102000,
+      "location": "onsite",
+      "score": 6,
+      "drivers": [
+        "Policy drafting AI-assisted but judgment-intensive",
+        "Control testing AI-augmented significantly",
+        "Regulatory interpretation requires certified expertise"
+      ]
+    },
+    {
+      "id": "r18",
+      "title": "Cybersecurity Analyst",
+      "stream": "Risk & Compliance",
+      "crew": "Compliance",
+      "pod": "GRC Pod",
+      "headcount": 4,
+      "salary": 118000,
+      "location": "onsite",
+      "score": 6,
+      "drivers": [
+        "L1 alert triage AI-automated at 80%",
+        "Incident report drafting AI-assisted",
+        "Threat hunting and novel attack analysis human-led"
+      ]
+    },
+    {
+      "id": "r19",
+      "title": "Penetration Tester",
+      "stream": "Risk & Compliance",
+      "crew": "Compliance",
+      "pod": "Security Pod",
+      "headcount": 3,
+      "salary": 132000,
+      "location": "onsite",
+      "score": 5,
+      "drivers": [
+        "Report writing AI-assisted — significant time saving",
+        "Standard scan execution automated",
+        "Novel exploit identification requires creative human reasoning"
+      ]
+    },
+    {
+      "id": "r20",
+      "title": "Cloud Infrastructure Engineer",
+      "stream": "Infrastructure",
+      "crew": "Platform",
+      "pod": "Cloud Pod",
+      "headcount": 5,
+      "salary": 122000,
+      "location": "onsite",
+      "score": 7,
+      "drivers": [
+        "Terraform / IaC AI-generated at high quality",
+        "Cloud cost optimisation AI-managed",
+        "Architecture and platform decisions need senior oversight"
+      ]
+    },
+    {
+      "id": "r21",
+      "title": "Network Engineer",
+      "stream": "Infrastructure",
+      "crew": "Platform",
+      "pod": "Network Pod",
+      "headcount": 4,
+      "salary": 108000,
+      "location": "onsite",
+      "score": 5,
+      "drivers": [
+        "Physical configuration requires hands-on access",
+        "Network runbooks AI-generated — time saving",
+        "Complex fault diagnosis remains human-led"
+      ]
+    },
+    {
+      "id": "r22",
+      "title": "IT Support Specialist",
+      "stream": "Infrastructure",
+      "crew": "End User",
+      "pod": "Service Desk Pod",
+      "headcount": 12,
+      "salary": 62000,
+      "location": "offshore",
+      "score": 8,
+      "drivers": [
+        "80% of L1 tickets resolvable by AI agents today",
+        "Password resets and access provisioning fully automated",
+        "Complex escalations require human judgement and empathy"
+      ]
+    },
+    {
+      "id": "r23",
+      "title": "IT Service Manager",
+      "stream": "Infrastructure",
+      "crew": "End User",
+      "pod": "Service Desk Pod",
+      "headcount": 2,
+      "salary": 112000,
+      "location": "onsite",
+      "score": 4,
+      "drivers": [
+        "Vendor relationship management requires human negotiation",
+        "SLA governance needs strategic context",
+        "Reporting and dashboards AI-automated — time saving"
+      ]
+    }
+  ],
+
+  "orgStructure": [
+    {
+      "stream": "Digital Banking",
+      "crews": [
+        {
+          "crew": "Mobile & Web",
+          "pods": [
+            { "pod": "Mobile Pod",      "roles": ["r01","r02","r03","r04"] },
+            { "pod": "Web Banking Pod", "roles": ["r05","r06"] }
+          ]
+        },
+        {
+          "crew": "API Platform",
+          "pods": [
+            { "pod": "API Pod", "roles": ["r07","r08"] }
+          ]
+        }
+      ]
+    },
+    {
+      "stream": "Enterprise Systems",
+      "crews": [
+        {
+          "crew": "Core Banking",
+          "pods": [
+            { "pod": "SAP Core Pod",      "roles": ["r09","r10"] },
+            { "pod": "Core Banking Pod",  "roles": ["r11","r12"] }
+          ]
+        },
+        {
+          "crew": "Payments",
+          "pods": [
+            { "pod": "Payments Pod", "roles": ["r13","r14"] }
+          ]
+        }
+      ]
+    },
+    {
+      "stream": "Risk & Compliance",
+      "crews": [
+        {
+          "crew": "Risk Data",
+          "pods": [
+            { "pod": "Risk Reporting Pod", "roles": ["r15","r16"] }
+          ]
+        },
+        {
+          "crew": "Compliance",
+          "pods": [
+            { "pod": "GRC Pod",      "roles": ["r17","r18"] },
+            { "pod": "Security Pod", "roles": ["r19"] }
+          ]
+        }
+      ]
+    },
+    {
+      "stream": "Infrastructure",
+      "crews": [
+        {
+          "crew": "Platform",
+          "pods": [
+            { "pod": "Cloud Pod",   "roles": ["r20"] },
+            { "pod": "Network Pod", "roles": ["r21"] }
+          ]
+        },
+        {
+          "crew": "End User",
+          "pods": [
+            { "pod": "Service Desk Pod", "roles": ["r22","r23"] }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "transformations": [
+    {
+      "roleId": "r01",
+      "title": "Senior Full Stack Developer",
+      "stream": "Digital Banking",
+      "score": 8,
+      "horizon12": {
+        "outcomes": [
+          { "archetype": "Augmented",   "probability": 50, "color": "#4a80d4" },
+          { "archetype": "Transformed", "probability": 35, "color": "#d4843a" },
+          { "archetype": "Merged",      "probability": 15, "color": "#8470cc" }
+        ],
+        "skillsDecreasing": ["Manual unit testing","Boilerplate feature coding","PR checklist execution"],
+        "skillsIncreasing": ["AI output code review","Architecture leadership","System design at scale"],
+        "skillsNew":        ["LLM prompt engineering","AI workflow orchestration"],
+        "recommendedAction": "Reskill Now",
+        "actionIcon": "⚡",
+        "confidence": "high",
+        "reasoning": "Within 12 months this role retains full employment but shifts fundamentally toward AI orchestration — steering and validating AI-generated code rather than authoring it. Senior developers who invest in AI tooling now will see productivity multipliers of 3–5×, making them disproportionately valuable. Those who delay will find the market has moved without them."
+      },
+      "horizon24": {
+        "outcomes": [
+          { "archetype": "Transformed", "probability": 55, "color": "#d4843a" },
+          { "archetype": "Merged",      "probability": 30, "color": "#8470cc" },
+          { "archetype": "New",         "probability": 15, "color": "#4aaa7a" }
+        ],
+        "skillsDecreasing": ["Individual code authoring","Unit test writing","Manual debugging"],
+        "skillsIncreasing": ["AI system design","Cross-functional orchestration","AI governance"],
+        "skillsNew":        ["Agentic workflow design","Multi-model coordination","AI output assurance"],
+        "recommendedAction": "Redesign Role",
+        "actionIcon": "◈",
+        "confidence": "medium",
+        "reasoning": "By 24 months this role converges with Solution Architect in AI-mature organisations. A single senior engineer orchestrating AI agents across the full stack replaces the traditional Senior/Junior pairing. Recommend redesigning the role profile now to attract the next generation of AI-native engineers."
+      }
+    },
+    {
+      "roleId": "r02",
+      "title": "Junior Full Stack Developer",
+      "stream": "Digital Banking",
+      "score": 9,
+      "horizon12": {
+        "outcomes": [
+          { "archetype": "Augmented",   "probability": 30, "color": "#4a80d4" },
+          { "archetype": "Obsolete",    "probability": 40, "color": "#d95f5f" },
+          { "archetype": "Merged",      "probability": 30, "color": "#8470cc" }
+        ],
+        "skillsDecreasing": ["Feature implementation","Bug fixing","Unit test authoring"],
+        "skillsIncreasing": ["AI tool operation","Output quality checking"],
+        "skillsNew":        ["AI Prompt Specialist"],
+        "recommendedAction": "Hiring Freeze",
+        "actionIcon": "⛔",
+        "confidence": "high",
+        "reasoning": "The 40% obsolescence probability at 12 months is the strongest near-term signal in this analysis. Junior developers perform tasks now at the frontier of production AI capability. Organisations should cease new junior developer hiring immediately and redirect learning investment to reskilling existing staff toward AI-augmented delivery roles."
+      },
+      "horizon24": {
+        "outcomes": [
+          { "archetype": "Obsolete", "probability": 65, "color": "#d95f5f" },
+          { "archetype": "Merged",   "probability": 25, "color": "#8470cc" },
+          { "archetype": "New",      "probability": 10, "color": "#4aaa7a" }
+        ],
+        "skillsDecreasing": ["All current primary tasks","Feature coding","Test writing"],
+        "skillsIncreasing": [],
+        "skillsNew":        ["AI Prompt Specialist","AI QA Analyst","AI Code Reviewer"],
+        "recommendedAction": "Plan Exit",
+        "actionIcon": "⚠",
+        "confidence": "medium",
+        "reasoning": "The standalone junior developer role is unlikely to exist in its current form in high-AI-adoption organisations by 2028. HR should begin proactive redeployment planning, particularly for offshore junior headcount which faces the sharpest reduction."
+      }
+    },
+    {
+      "roleId": "r22",
+      "title": "IT Support Specialist",
+      "stream": "Infrastructure",
+      "score": 8,
+      "horizon12": {
+        "outcomes": [
+          { "archetype": "Augmented",   "probability": 40, "color": "#4a80d4" },
+          { "archetype": "Obsolete",    "probability": 35, "color": "#d95f5f" },
+          { "archetype": "Merged",      "probability": 25, "color": "#8470cc" }
+        ],
+        "skillsDecreasing": ["Password resets","L1 ticket resolution","Software installs","Access provisioning"],
+        "skillsIncreasing": ["AI agent supervision","Complex issue escalation"],
+        "skillsNew":        ["AI Service Desk Agent Operator"],
+        "recommendedAction": "Hiring Freeze",
+        "actionIcon": "⛔",
+        "confidence": "high",
+        "reasoning": "L1 support is the most immediately automatable function in the IT division. AI agents handle 60–80% of L1 ticket types at production quality today. The 12 offshore IT Support Specialists face direct displacement within 12–18 months. Immediate hiring freeze recommended."
+      },
+      "horizon24": {
+        "outcomes": [
+          { "archetype": "Obsolete", "probability": 60, "color": "#d95f5f" },
+          { "archetype": "New",      "probability": 25, "color": "#4aaa7a" },
+          { "archetype": "Augmented","probability": 15, "color": "#4a80d4" }
+        ],
+        "skillsDecreasing": ["All routine ticket handling","Standard access management"],
+        "skillsIncreasing": [],
+        "skillsNew":        ["IT AI Agent Manager","User Experience Analyst","Complex Support Specialist"],
+        "recommendedAction": "Plan Exit",
+        "actionIcon": "⚠",
+        "confidence": "high",
+        "reasoning": "The Service Desk in its current form will not exist by 2028. The new structure consists of a small onsite team managing AI agents, handling complex issues, and owning the end-user experience strategy. Begin structured workforce transition planning for this cohort now."
+      }
+    },
+    {
+      "roleId": "r16",
+      "title": "Risk Reporting Analyst",
+      "stream": "Risk & Compliance",
+      "score": 8,
+      "horizon12": {
+        "outcomes": [
+          { "archetype": "Augmented", "probability": 45, "color": "#4a80d4" },
+          { "archetype": "Merged",    "probability": 35, "color": "#8470cc" },
+          { "archetype": "Obsolete",  "probability": 20, "color": "#d95f5f" }
+        ],
+        "skillsDecreasing": ["SQL query writing","Report formatting","Data extraction scripting"],
+        "skillsIncreasing": ["AI output governance","Regulatory interpretation","Exception analysis"],
+        "skillsNew":        ["AI Reporting Governance"],
+        "recommendedAction": "Reskill Now",
+        "actionIcon": "⚡",
+        "confidence": "high",
+        "reasoning": "Risk report generation is automatable at publication quality today. One analyst with AI tools replaces three without. FINMA and ECB regulatory frameworks are beginning to require documented AI governance for automated reporting, creating a new specialisation."
+      },
+      "horizon24": {
+        "outcomes": [
+          { "archetype": "Merged",      "probability": 50, "color": "#8470cc" },
+          { "archetype": "Obsolete",    "probability": 35, "color": "#d95f5f" },
+          { "archetype": "Transformed", "probability": 15, "color": "#d4843a" }
+        ],
+        "skillsDecreasing": ["Report production","Data pulling","Commentary generation"],
+        "skillsIncreasing": ["Regulatory judgment","Stakeholder narrative","AI model governance"],
+        "skillsNew":        ["Risk AI Analyst","Regulatory AI Officer"],
+        "recommendedAction": "Redesign Role",
+        "actionIcon": "◈",
+        "confidence": "medium",
+        "reasoning": "The Risk AI Analyst combines data literacy, regulatory expertise, and AI output governance. Current headcount of 6 reduces to 2–3 under the Likely scenario. Plan redeployment of the rest proactively, not reactively."
+      }
+    },
+    {
+      "roleId": "r08",
+      "title": "DevOps Engineer",
+      "stream": "Digital Banking",
+      "score": 7,
+      "horizon12": {
+        "outcomes": [
+          { "archetype": "Augmented",   "probability": 55, "color": "#4a80d4" },
+          { "archetype": "Transformed", "probability": 30, "color": "#d4843a" },
+          { "archetype": "Merged",      "probability": 15, "color": "#8470cc" }
+        ],
+        "skillsDecreasing": ["IaC boilerplate writing","Pipeline config scripting","Runbook authoring"],
+        "skillsIncreasing": ["Platform architecture","AI deployment governance","SRE and reliability design"],
+        "skillsNew":        ["AI Infrastructure Engineer"],
+        "recommendedAction": "Reskill Now",
+        "actionIcon": "⚡",
+        "confidence": "high",
+        "reasoning": "DevOps engineers who adopt AI tooling become dramatically more productive. The transformation reflects a role identity shift from 'builds pipelines' to 'governs the platform AI agents run on.' Early movers gain significant strategic value in a market where AI deployment expertise is scarce."
+      },
+      "horizon24": {
+        "outcomes": [
+          { "archetype": "Transformed", "probability": 60, "color": "#d4843a" },
+          { "archetype": "New",         "probability": 25, "color": "#4aaa7a" },
+          { "archetype": "Merged",      "probability": 15, "color": "#8470cc" }
+        ],
+        "skillsDecreasing": ["Manual pipeline maintenance","Script writing","Standard configuration"],
+        "skillsIncreasing": ["AI agent infrastructure","Platform governance","Agentic deployment patterns"],
+        "skillsNew":        ["AI Platform Engineer","MLOps Specialist","Agentic Systems Architect"],
+        "recommendedAction": "Redesign Role",
+        "actionIcon": "◈",
+        "confidence": "medium",
+        "reasoning": "The platform engineering role of 2028 is fundamentally about making AI agents reliable, observable, and governable. This role transformation should be treated as an opportunity — one of the few in this analysis where the outcome is upskilling rather than displacement."
+      }
+    },
+    {
+      "roleId": "r19",
+      "title": "Penetration Tester",
+      "stream": "Risk & Compliance",
+      "score": 5,
+      "horizon12": {
+        "outcomes": [
+          { "archetype": "Augmented",   "probability": 70, "color": "#4a80d4" },
+          { "archetype": "Transformed", "probability": 20, "color": "#d4843a" },
+          { "archetype": "Merged",      "probability": 10, "color": "#8470cc" }
+        ],
+        "skillsDecreasing": ["Report boilerplate writing","Standard scan interpretation"],
+        "skillsIncreasing": ["AI tool chain orchestration","Red team strategy design","Novel attack vector research"],
+        "skillsNew":        ["AI-assisted exploit research"],
+        "recommendedAction": "Monitor",
+        "actionIcon": "👁",
+        "confidence": "high",
+        "reasoning": "Penetration testing is among the most resilient roles in this analysis. The adversarial, creative nature of offensive security requires human intuition that AI cannot replicate. Augmentation is real — testers using AI tools are 40–60% more productive — but displacement risk is low."
+      },
+      "horizon24": {
+        "outcomes": [
+          { "archetype": "Augmented",   "probability": 50, "color": "#4a80d4" },
+          { "archetype": "Transformed", "probability": 40, "color": "#d4843a" },
+          { "archetype": "Merged",      "probability": 10, "color": "#8470cc" }
+        ],
+        "skillsDecreasing": ["Manual scan execution","Standard compliance reports"],
+        "skillsIncreasing": ["AI Red Team design","Adversarial ML expertise","AI system attack research"],
+        "skillsNew":        ["AI Red Team Specialist","AI Security Researcher"],
+        "recommendedAction": "Monitor",
+        "actionIcon": "👁",
+        "confidence": "medium",
+        "reasoning": "By 24 months the role evolves toward AI Red Teaming — testing AI systems themselves for vulnerabilities. This is a growth area mandated by emerging AI governance regulation. Organisations should invest in upskilling this cohort toward AI security specialisation."
+      }
+    }
+  ],
+
+  "scenarios": [
+    {
+      "podName": "Mobile Pod",
+      "current": {
+        "totalHeadcount": 17,
+        "roles": [
+          { "name": "Senior Full Stack Dev", "headcount": 6, "location": "onsite"    },
+          { "name": "Junior Full Stack Dev",  "headcount": 8, "location": "offshore"  },
+          { "name": "Product Owner",          "headcount": 1, "location": "onsite"    },
+          { "name": "UX Designer",            "headcount": 2, "location": "nearshore" }
+        ]
+      },
+      "conservative": {
+        "headcount": 14,
+        "costDelta": -0.08,
+        "locationSplit": { "onsite": 6, "nearshore": 2, "offshore": 6 },
+        "roles": [
+          { "name": "Senior Full Stack Dev", "headcount": 6, "type": "same" },
+          { "name": "Junior Full Stack Dev",  "headcount": 5, "type": "chg"  },
+          { "name": "Product Owner",          "headcount": 1, "type": "same" },
+          { "name": "UX Designer",            "headcount": 2, "type": "same" }
+        ],
+        "assumption": "AI code generation at ~35% acceptance. Junior roles reduce through attrition only.",
+        "reasoning": "Conservative scenario assumes cautious adoption. Headcount reduces through natural attrition. Junior developer roles partially sustained. Cost saving of 8% reflects productivity gain without structural change.",
+        "risk": "If AI adoption accelerates beyond assumption, savings are left on the table and competitors gain structural cost advantage.",
+        "workforceImpact": "Offshore impact minimal. Junior developer attrition not backfilled. No active redeployment required.",
+        "leadershipActions": ["Monitor AI acceptance rates quarterly","Begin voluntary reskilling for 2 junior developers","Review junior hiring policy"]
+      },
+      "likely": {
+        "headcount": 10,
+        "costDelta": -0.31,
+        "locationSplit": { "onsite": 5, "nearshore": 2, "offshore": 3 },
+        "roles": [
+          { "name": "Senior Full Stack Dev", "headcount": 5, "type": "same" },
+          { "name": "Junior Full Stack Dev",  "headcount": 2, "type": "chg"  },
+          { "name": "Product Owner",          "headcount": 1, "type": "same" },
+          { "name": "UX Designer",            "headcount": 1, "type": "chg"  },
+          { "name": "AI Prompt Engineer",     "headcount": 1, "type": "new"  }
+        ],
+        "assumption": "AI code generation reaches 65% acceptance within 18 months. Senior+AI pairing model deployed.",
+        "reasoning": "The Likely scenario reflects the Senior+AI pairing model: one senior developer with AI tools delivers the output of 2–3 without. Offshore junior headcount reduces from 8 to 3. A new AI Prompt Engineering role emerges. Pod shrinks from 17 to 10 FTEs — same delivery capacity, 31% lower cost base.",
+        "risk": "AI adoption may be delayed by compliance review cycles or model reliability concerns in production banking environments.",
+        "workforceImpact": "6 offshore junior developers impacted. 2 reskilling candidates identified. 3 require managed transition. 1 nearshore UX contractor role reduced.",
+        "leadershipActions": ["Structured reskilling for 2 junior devs → AI Prompt Engineer pathway","Managed transition plan for 3 offshore roles","Redesign UX Designer role profile","Hire or reskill 1 AI Prompt Engineer"]
+      },
+      "aggressive": {
+        "headcount": 6,
+        "costDelta": -0.54,
+        "locationSplit": { "onsite": 4, "nearshore": 1, "offshore": 1 },
+        "roles": [
+          { "name": "Senior Full Stack Dev", "headcount": 3, "type": "chg"  },
+          { "name": "AI Orchestrator",        "headcount": 1, "type": "new"  },
+          { "name": "Product Owner",          "headcount": 1, "type": "same" },
+          { "name": "AI UX Designer",         "headcount": 1, "type": "new"  }
+        ],
+        "assumption": "Full agentic coding deployment. AI generates, tests, and deploys features with minimal human authoring.",
+        "reasoning": "Three senior engineers orchestrate AI agents for the full delivery pipeline. All 8 offshore junior roles eliminated. Pod of 6 replaces Pod of 17 — 54% cost reduction.",
+        "risk": "High. Banking regulatory requirements for human oversight may constrain autonomous deployment. Significant transition risk if timeline is compressed.",
+        "workforceImpact": "8 offshore junior roles eliminated. Active redeployment to other streams or exit required. Full offshore presence in this Pod eliminated.",
+        "leadershipActions": ["Board-level approval required","Regulatory counsel on autonomous code deployment","Structured 18-month exit programme for offshore cohort","Executive sponsorship of Agentic deployment programme"]
+      }
+    },
+    {
+      "podName": "Service Desk Pod",
+      "current": {
+        "totalHeadcount": 14,
+        "roles": [
+          { "name": "IT Support Specialist", "headcount": 12, "location": "offshore" },
+          { "name": "IT Service Manager",     "headcount": 2,  "location": "onsite"  }
+        ]
+      },
+      "conservative": {
+        "headcount": 10,
+        "costDelta": -0.18,
+        "locationSplit": { "onsite": 2, "nearshore": 0, "offshore": 8 },
+        "roles": [
+          { "name": "IT Support Specialist", "headcount": 8, "type": "chg"  },
+          { "name": "IT Service Manager",     "headcount": 2, "type": "same" }
+        ],
+        "assumption": "AI chatbot resolves 40% of L1 tickets. Human agents handle remaining volume.",
+        "reasoning": "Maintains bulk of offshore service desk while AI handles routine ticket types. Headcount reduces from 12 to 8 through attrition.",
+        "risk": "Conservative assumption may prove optimistic if AI support agents reach the Likely scenario capability earlier than expected.",
+        "workforceImpact": "4 offshore roles eliminated through attrition over 18–24 months. No active transition required.",
+        "leadershipActions": ["Deploy AI chatbot for top 5 ticket types","Measure resolution rate quarterly","Do not backfill natural attrition in offshore cohort"]
+      },
+      "likely": {
+        "headcount": 5,
+        "costDelta": -0.58,
+        "locationSplit": { "onsite": 3, "nearshore": 0, "offshore": 2 },
+        "roles": [
+          { "name": "AI Agent Supervisor",       "headcount": 2, "type": "new"  },
+          { "name": "IT Service Manager",         "headcount": 1, "type": "chg"  },
+          { "name": "Complex Support Specialist", "headcount": 2, "type": "chg"  }
+        ],
+        "assumption": "AI agents resolve 75% of L1 and L2 tickets autonomously. Humans handle exceptions and sensitive issues.",
+        "reasoning": "12 offshore IT Support roles reduce to 2 complex-case specialists. Three new roles emerge. Cost saving of CHF 1.4M annually for this Pod alone. Offshore headcount from 12 to 2.",
+        "risk": "Transition complexity is high. Poor AI agent experiences during transition can cause significant user trust damage.",
+        "workforceImpact": "10 offshore IT Support roles impacted. 2 highest-performers reskilled to Complex Support Specialist (onsite). Remaining 10 managed transition over 12 months.",
+        "leadershipActions": ["Define Complex Support Specialist job profile immediately","Select 2 offshore high-performers for onsite reskilling","Design AI Agent Supervisor training programme","Commission AI service desk platform evaluation","Communicate transparently with offshore team leads"]
+      },
+      "aggressive": {
+        "headcount": 3,
+        "costDelta": -0.74,
+        "locationSplit": { "onsite": 3, "nearshore": 0, "offshore": 0 },
+        "roles": [
+          { "name": "IT AI Platform Owner", "headcount": 1, "type": "new" },
+          { "name": "Senior IT Specialist",  "headcount": 2, "type": "new" }
+        ],
+        "assumption": "End-to-end agentic service desk. AI handles all routine and 90% of complex tickets.",
+        "reasoning": "Fully automated service desk with a small onsite team of three. All offshore presence eliminated. Technically achievable within 36 months but requires significant change management.",
+        "risk": "Critical. Full elimination of offshore presence in 36 months requires immediate planning. Staff morale and reputational risk of large-scale redundancies.",
+        "workforceImpact": "All 12 offshore IT Support roles eliminated. Full managed transition programme required with 18-month lead time minimum.",
+        "leadershipActions": ["Legal review of offshore employment obligations in India and Philippines","Board risk register — reputational and operational","Define 24-month managed transition with severance framework","Engage CHRO and Legal before any communication to offshore teams"]
+      }
+    },
+    {
+      "podName": "Risk Reporting Pod",
+      "current": {
+        "totalHeadcount": 10,
+        "roles": [
+          { "name": "Risk Reporting Analyst", "headcount": 6, "location": "offshore"  },
+          { "name": "Data Engineer — Risk",    "headcount": 4, "location": "nearshore" }
+        ]
+      },
+      "conservative": {
+        "headcount": 8,
+        "costDelta": -0.12,
+        "locationSplit": { "onsite": 0, "nearshore": 4, "offshore": 4 },
+        "roles": [
+          { "name": "Risk Reporting Analyst", "headcount": 4, "type": "chg"  },
+          { "name": "Data Engineer — Risk",    "headcount": 4, "type": "same" }
+        ],
+        "assumption": "AI assists report generation. All outputs require mandatory human review per regulatory requirement.",
+        "reasoning": "Maintains data engineering intact and reduces analyst headcount modestly through attrition. FINMA regulatory caution constrains full automation.",
+        "risk": "Regulatory interpretation may be more permissive than assumed, making this scenario overly cautious.",
+        "workforceImpact": "2 offshore analyst roles eliminated through attrition. No active transition required.",
+        "leadershipActions": ["Engage Risk Legal on regulatory AI governance framework","Deploy AI reporting tools to reduce analyst workload","Assess which reports qualify for AI-assisted generation"]
+      },
+      "likely": {
+        "headcount": 6,
+        "costDelta": -0.35,
+        "locationSplit": { "onsite": 2, "nearshore": 2, "offshore": 2 },
+        "roles": [
+          { "name": "Risk AI Analyst",         "headcount": 2, "type": "new"  },
+          { "name": "Data Engineer — Risk",     "headcount": 2, "type": "chg"  },
+          { "name": "Reporting Governance Lead","headcount": 1, "type": "new"  },
+          { "name": "Regulatory Liaison",       "headcount": 1, "type": "new"  }
+        ],
+        "assumption": "AI generates 80% of standard risk reports. Analysts focus on exception analysis and regulatory narrative.",
+        "reasoning": "The Risk AI Analyst combines data literacy, regulatory expertise, and AI output governance. 4 offshore analysts reduced to 2 specialist roles. Location moves from offshore Bangalore to nearshore Warsaw for surviving roles.",
+        "risk": "Risk AI Analyst profile is scarce in the market. Reskilling from existing cohort may take 18 months.",
+        "workforceImpact": "4 offshore analysts impacted. 2 identified for reskilling to Risk AI Analyst (nearshore). Remaining 2 managed transition with 12-month lead time.",
+        "leadershipActions": ["Define Risk AI Analyst job profile and reskilling pathway","Engage FINMA AI governance consultation","Identify 2 highest-capability offshore analysts for nearshore reskilling","Commission AI reporting platform assessment"]
+      },
+      "aggressive": {
+        "headcount": 4,
+        "costDelta": -0.52,
+        "locationSplit": { "onsite": 2, "nearshore": 2, "offshore": 0 },
+        "roles": [
+          { "name": "Risk AI Analyst",      "headcount": 2, "type": "new" },
+          { "name": "Senior Data Engineer",  "headcount": 1, "type": "chg" },
+          { "name": "Regulatory AI Officer", "headcount": 1, "type": "new" }
+        ],
+        "assumption": "Near-autonomous risk reporting with continuous AI monitoring and exception alerting.",
+        "reasoning": "Offshore presence eliminated as remaining roles require regulatory judgment and business proximity. A new Regulatory AI Officer manages the interface with FINMA/ECB.",
+        "risk": "Regulatory AI Officer is a net-new role with no established market salary. FINMA guidance on automated risk reporting is still developing.",
+        "workforceImpact": "6 offshore analyst roles impacted. 2 reskilled to Risk AI Analyst. Remaining 4 managed exit over 18 months.",
+        "leadershipActions": ["Immediate engagement with FINMA on AI governance obligations","External search for Regulatory AI Officer — 6 month lead time","Structured 18-month transition for 4 offshore roles"]
+      }
+    }
+  ],
+
+  "offshoreImpact": [
+    { "stream": "Digital Banking",    "current": 52, "conservative": 44, "likely": 28 },
+    { "stream": "Enterprise Systems", "current": 46, "conservative": 38, "likely": 26 },
+    { "stream": "Risk & Compliance",  "current": 28, "conservative": 22, "likely": 14 },
+    { "stream": "Infrastructure",     "current": 22, "conservative": 16, "likely": 4  }
+  ],
+
+  "executiveSummary": {
+    "headline": "52% of the IT workforce operates in roles with high AI displacement exposure — concentrated in functions that are already being actively automated.",
+    "body": "Analysis of 35 roles across 357 FTE reveals a division at a structural inflection point. The near-term risk is not mass redundancy — it is a quiet hollowing out of junior and routine roles, particularly in offshore locations, while senior roles transform into AI orchestration functions. Without deliberate action, the organisation risks both talent pipeline disruption and missed productivity gains.",
+    "riskLevel": 7,
+    "findings": [
+      {
+        "number": 1,
+        "title": "Junior and routine roles face imminent displacement — particularly offshore",
+        "body": "Junior developers, test analysts, and IT support specialists — the majority offshore — are performing tasks that AI tools can now execute at production quality. The Likely scenario projects a 51% reduction in offshore headcount (148 → 72 FTE) within 24 months. Hiring of junior profiles into exposed roles should be reviewed immediately."
+      },
+      {
+        "number": 2,
+        "title": "Senior roles are transforming, not disappearing — but the window to act is narrow",
+        "body": "Senior engineers, DevOps professionals, and data engineers face high theoretical exposure but low near-term obsolescence risk. Their roles are transforming into AI orchestration, platform governance, and system design functions. Organisations that reskill this cohort now will see productivity gains of 40–60%."
+      },
+      {
+        "number": 3,
+        "title": "Five new AI-native roles are emerging that do not currently exist in the division",
+        "body": "AI Orchestrator, AI Platform Engineer, Risk AI Analyst, AI Agent Supervisor, and Regulatory AI Officer are roles the division will need within 18–24 months. None exist today. Building these capabilities through reskilling is faster and cheaper than external hiring — but requires structured programmes starting now."
+      }
+    ],
+    "actions": [
+      {
+        "timeframe": "Immediate · 0–3 months",
+        "title": "Freeze junior hiring in high-exposure roles",
+        "body": "Halt new recruitment for Junior Developer, Test Analyst, and L1 Support roles in offshore locations. Redirect headcount budget to AI reskilling programmes for existing senior staff.",
+        "tags": ["Offshore","Engineering"]
+      },
+      {
+        "timeframe": "Short-term · 3–12 months",
+        "title": "Launch AI reskilling programme for top 40 exposed roles",
+        "body": "Design structured reskilling pathways for Senior Developers, DevOps Engineers, and Business Analysts. Target: 60% of high-exposure FTE enrolled within 9 months.",
+        "tags": ["All Streams"]
+      },
+      {
+        "timeframe": "Strategic · 12–24 months",
+        "title": "Redesign Pod structure for AI-augmented delivery",
+        "body": "Begin Pod redesign based on Scenario Explorer projections. Pilot with Mobile Pod and Service Desk Pod. Establish new AI-native roles. Revise offshore strategy in line with Likely scenario projections.",
+        "tags": ["Digital Banking","Infrastructure"]
+      }
+    ]
+  }
+}
